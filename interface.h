@@ -1,6 +1,6 @@
 
-#ifndef LOJA_DISCOS_H_INCLUDED
-#define LOJA_DISCOS_H_INCLUDED
+#ifndef INTERFACE_H_INCLUDED
+#define INTERFACE_H_INCLUDED
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,9 +10,9 @@
 #include "compra.h"
 #include "funcionario.h"
 
-void MSG_MENU(); 
+void MSG_MENU(); // MENSAGEM PARA EXIBIR O MENU PRINCIPAL
 
-void MENU();
+void MENU(FILE *compras, FILE *clientes, FILE *funcionarios, FILE *discos); // MÓDULO DE MENU
 
 
 #endif 

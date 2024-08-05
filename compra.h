@@ -1,6 +1,9 @@
 #ifndef COMPRA_H
 #define COMPRA_H
 
+#include <stdlib.h>
+#include <stdio.h>
+
 typedef struct {
     int id;             
     int disco_id;       
