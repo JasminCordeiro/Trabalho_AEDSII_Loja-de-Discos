@@ -1,6 +1,6 @@
 
-#ifndef disco_H_INCLUDED
-#define disco_H_INCLUDED
+#ifndef disco_H
+#define disco_H
 
 #include <stdlib.h>
 #include <stdio.h>
