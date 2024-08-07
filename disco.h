@@ -15,11 +15,11 @@ typedef struct {
     int estoque;       
 } Disco;
 
-// Cria disco.
+// Cria disco
 Disco *criaDisco(int id, const char *titulo, const char *artista, const char *genero, int ano, float preco, int estoque);
 
-// Salva disco no arquivo out, na posição atual do cursor
-void salvaDisco(Disco *disco, FILE *out);
+// Salva disco no arquivo arq, na posição atual do cursor
+void salvaDisco(Disco *disco, FILE *arq);
 
 // Lê um disco do arquivo na posição atual do cursor
 // Retorna um ponteiro para o disco lido do arquivo
@@ -35,15 +35,21 @@ int tamanhoRegistroDisco();
 int qtdRegistrosDisco(FILE *arq);
 
 // Cria a base de dados ordenada pelo ID do disco
-void criarBaseOrdenadaDisco(FILE *out, int tam);
+void criarBaseOrdenadaDisco(FILE *arq, int tam);
 
 // Embaralha base de dados
 void embaralhaDisco(int *vet, int max, int trocas);
 
 // Cria a base de dados desordenada pelo ID do disco
-void criarBaseDesordenadaDisco(FILE *out, int tam, int qtdTrocas);
+void criarBaseDesordenadaDisco(FILE *arq, int tam, int qtdTrocas);
 
 // Imprime a base de dados
-void imprimirBaseDisco(FILE *out);
+void imprimirBaseDisco(FILE *arq);
+
+// Realiza Busca sequencial em discos
+Disco *buscaSequencialDisco(int id, FILE *arq);
+
+// Realiza Busca Binaria em discos
+Disco *buscaBinariaDisco(int id, FILE *arq, int inicio, int fim);
 
 #endif

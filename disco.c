@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 // Cria um novo disco.
 Disco *criaDisco(int id, const char *titulo, const char *artista, const char *genero, int ano, float preco, int estoque) {
@@ -20,15 +21,15 @@ Disco *criaDisco(int id, const char *titulo, const char *artista, const char *ge
     return disco;
 }
 
-// Salva o disco no arquivo out, na posição atual do cursor
-void salvaDisco(Disco *disco, FILE *out) {
-    fwrite(&disco->id, sizeof(int), 1, out);
-    fwrite(disco->titulo, sizeof(char), sizeof(disco->titulo), out);
-    fwrite(disco->artista, sizeof(char), sizeof(disco->artista), out);
-    fwrite(disco->genero, sizeof(char), sizeof(disco->genero), out);
-    fwrite(&disco->ano, sizeof(int), 1, out);
-    fwrite(&disco->preco, sizeof(float), 1, out);
-    fwrite(&disco->estoque, sizeof(int), 1, out);
+// Salva o disco no arquivo arq, na posição atual do cursor
+void salvaDisco(Disco *disco, FILE *arq) {
+    fwrite(&disco->id, sizeof(int), 1, arq);
+    fwrite(disco->titulo, sizeof(char), sizeof(disco->titulo), arq);
+    fwrite(disco->artista, sizeof(char), sizeof(disco->artista), arq);
+    fwrite(disco->genero, sizeof(char), sizeof(disco->genero), arq);
+    fwrite(&disco->ano, sizeof(int), 1, arq);
+    fwrite(&disco->preco, sizeof(float), 1, arq);
+    fwrite(&disco->estoque, sizeof(int), 1, arq);
 }
 
 // Lê um disco do arquivo na posição atual do cursor
@@ -80,7 +81,7 @@ int qtdRegistrosDisco(FILE *arq) {
 }
 
 // Cria a base de dados ordenada pelo ID do disco
-void criarBaseOrdenadaDisco(FILE *out, int tam) {
+void criarBaseOrdenadaDisco(FILE *arq, int tam) {
     int vet[tam];
     Disco *d;
 
@@ -91,7 +92,7 @@ void criarBaseOrdenadaDisco(FILE *out, int tam) {
 
     for (int i = 0; i < tam; i++) {
         d = criaDisco(vet[i], "Titulo", "Artista", "Genero", 2022, 100.0 * i, 10 * i);
-        salvaDisco(d, out);
+        salvaDisco(d, arq);
     }
 
     free(d);
@@ -110,7 +111,7 @@ void embaralhaDisco(int *vet, int max, int trocas) {
 }
 
 // Cria a base de dados desordenada pelo ID do disco
-void criarBaseDesordenadaDisco(FILE *out, int tam, int qtdTrocas) {
+void criarBaseDesordenadaDisco(FILE *arq, int tam, int qtdTrocas) {
     int vet[tam];
     Disco *d;
 
@@ -123,21 +124,61 @@ void criarBaseDesordenadaDisco(FILE *out, int tam, int qtdTrocas) {
 
     for (int i = 0; i < tam; i++) {
         d = criaDisco(vet[i], "Titulo", "Artista", "Genero", 2022, 100.0 * i, 10 * i);
-        salvaDisco(d, out);
+        salvaDisco(d, arq);
     }
 
     free(d);
 }
 
 // Imprime a base de dados
-void imprimirBaseDisco(FILE *out) {
+void imprimirBaseDisco(FILE *arq) {
     printf("Imprimindo a base de dados...\n");
 
-    rewind(out);
+    rewind(arq);
     Disco *d;
 
-    while ((d = leDisco(out)) != NULL)
+    while ((d = leDisco(arq)) != NULL)
         imprimeDisco(d);
 
     free(d);
+}
+
+Disco *buscaSequencialDisco(int chave, FILE *arq){
+
+    Disco *d;
+    int achou;
+    rewind(arq);
+    while ((d = leDisco(arq)) != NULL){
+
+        if(d->id == chave){
+           //return d;
+           achou = 1;
+           break;
+        }
+    }
+        if(achou == 1)
+            return d;
+        else printf("Disco nao encontrado");
+
+        free(d);
+}
+
+Disco* buscaBinariaDisco(int id, FILE* arq, int inicio, int fim) {
+    while (inicio <= fim) {
+        int meio = inicio + (fim - inicio) / 2;
+        fseek(arq, meio * tamanhoRegistroDisco(), SEEK_SET);
+
+        Disco *d = leDisco(arq);
+
+        if (d->id == id) {
+            return d;
+        }
+         if (d->id > id) {
+            fim = meio - 1;
+        } else {
+            inicio = meio + 1;
+        }
+        free(d);
+    }
+    return NULL;
 }

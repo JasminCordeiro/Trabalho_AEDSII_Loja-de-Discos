@@ -29,9 +29,8 @@ int main(int argc, char** argv) {
     if ((discos = fopen("discos.dat", "w+b")) == NULL) {
         printf("Erro ao abrir arquivo de discos\n");
         exit(1);
-    } else {
+    }
 
-    
     Disco *d;
     Cliente *c;
     Funcionario *f;
@@ -72,8 +71,6 @@ int main(int argc, char** argv) {
         // Lê a opção do usuário
         scanf("%d", &opcao);
 
-        // Verifica se a leitura foi bem-sucedid
-
         switch(opcao) {
             case 0:
                 printf("Saindo...\n");
@@ -88,14 +85,28 @@ int main(int argc, char** argv) {
 
             case 2:
                 printf("Cadastrar Disco selecionado.\n");
+                d = criaDisco(50,"novo","Anonimo", "rock",2015,50.45,5);
+                salvaDisco(d, discos);
+                free(d);
+                imprimirBaseDisco(discos);
+
                 break;
 
             case 3:
                 printf("Buscar Discos (Sequencial) selecionado.\n");
+                d = buscaSequencialDisco(5,discos);
+                if(d != NULL)
+                    (imprimeDisco(d));
+                free(d);    
                 break;
 
             case 4:
                 printf("Buscar Discos (Binaria) selecionado.\n");
+                int tamanho = ftell(discos) / tamanhoRegistroDisco();
+                d = buscaBinariaDisco(6,discos,0,tamanho - 1);
+                if(d != NULL)
+                    (imprimeDisco(d));
+                free(d);  
                 break;
 
             case 5:
@@ -160,11 +171,11 @@ int main(int argc, char** argv) {
         }
     } while (opcao != 0);
     
-    fclose(compras);
-        fclose(clientes);
-        fclose(funcionarios);
-        fclose(discos);
-}
+    // fclose(compras);
+    // fclose(clientes);
+    // fclose(funcionarios);
+    // fclose(discos);
+
     return 0; 
 
 }
