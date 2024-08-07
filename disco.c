@@ -52,11 +52,11 @@ Disco *leDisco(FILE *in) {
 void imprimeDisco(Disco *disco) {
     printf("**********************************************\n");
     printf("Disco ID: %d\n", disco->id);
-    printf("Título: %s\n", disco->titulo);
+    printf("Titulo: %s\n", disco->titulo);
     printf("Artista: %s\n", disco->artista);
-    printf("Gênero: %s\n", disco->genero);
+    printf("Genero: %s\n", disco->genero);
     printf("Ano: %d\n", disco->ano);
-    printf("Preço: %.2f\n", disco->preco);
+    printf("Preco: %.2f\n", disco->preco);
     printf("Estoque: %d\n", disco->estoque);
     printf("**********************************************\n");
 }

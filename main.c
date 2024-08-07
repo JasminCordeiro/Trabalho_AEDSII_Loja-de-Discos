@@ -10,6 +10,9 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
+    int quantidadeDiscos = 10;
+    int quantidadeTrocas = 8;
+    
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
         printf("Erro ao abrir arquivo de compras\n");
@@ -77,7 +80,10 @@ int main(int argc, char** argv) {
                 break;
 
             case 1:
-                printf("Base de discos criada com sucesso!\n");
+                printf("Criando base de discos desordenada...\n");
+                criarBaseDesordenadaDisco(discos, quantidadeDiscos, quantidadeTrocas);
+                imprimirBaseDisco(discos);
+                break;
                 break;
 
             case 2:
