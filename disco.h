@@ -54,4 +54,6 @@ Disco *buscaBinariaDisco(int id, FILE *arq, int inicio, int fim);
 
 void atualizaDisco(FILE *arq);
 
+void bubbleSortDiscos(FILE *arq, int tam);
+
 #endif

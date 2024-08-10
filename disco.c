@@ -225,3 +225,44 @@ void atualizaDisco(FILE *arq) {
     // Libera a memória alocada para o disco
     free(d);
 }
+
+void bubbleSortDiscos(FILE *arq, int tam) {
+    Disco *discoAtual = NULL;
+    Disco *discoProximo = NULL;
+    int trocou;
+
+    // Executa o Bubble Sort
+    for (int i = 0; i < tam - 1; i++) {
+        trocou = 0;
+        for (int j = 0; j < tam - i - 1; j++) {
+            // Posiciona o cursor no início do disco atual
+            fseek(arq, j * tamanhoRegistroDisco(), SEEK_SET);
+            discoAtual = leDisco(arq);
+
+            // Posiciona o cursor no início do próximo disco
+            fseek(arq, (j + 1) * tamanhoRegistroDisco(), SEEK_SET);
+            discoProximo = leDisco(arq);
+
+            // Compara os IDs dos discos
+            if (discoAtual->id > discoProximo->id) {
+                // Troca os discos de lugar no arquivo
+                fseek(arq, j * tamanhoRegistroDisco(), SEEK_SET);
+                salvaDisco(discoProximo, arq);
+
+                fseek(arq, (j + 1) * tamanhoRegistroDisco(), SEEK_SET);
+                salvaDisco(discoAtual, arq);
+
+                trocou = 1;
+            }
+
+            // Libera a memória alocada para os discos
+            free(discoAtual);
+            free(discoProximo);
+        }
+
+        // Se nenhuma troca foi feita, a lista já está ordenada
+        if (!trocou) {
+            break;
+        }
+    }
+}

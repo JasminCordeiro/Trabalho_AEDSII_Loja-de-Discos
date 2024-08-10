@@ -119,6 +119,10 @@ int main(int argc, char** argv) {
 
             case 6:
                 printf("\nOrdenar Disco selecionado.\n");
+                int tam = qtdRegistrosDisco(discos);
+                bubbleSortDiscos(discos, tam);
+                printf("Base de dados ordenada:\n");
+                imprimirBaseDisco(discos);
                 break;
 
             case 7:
@@ -175,10 +179,10 @@ int main(int argc, char** argv) {
         }
     } while (opcao != 0);
     
-    // fclose(compras);
-    // fclose(clientes);
-    // fclose(funcionarios);
-    // fclose(discos);
+    fclose(compras);
+    fclose(clientes);
+    fclose(funcionarios);
+    fclose(discos);
 
     return 0; 
 
