@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
     Disco *d;
     Cliente *c;
     Funcionario *f;
+    Compra *p;
     int tamanho;
 
     do { 
@@ -190,10 +191,22 @@ int main(int argc, char** argv) {
 
             case 15:
                 printf("\nCadastrar Compra selecionado.\n");
+                 Compra *compra1 = criaCompra(1, 101, "123.456.789-00", 10, 5, 100.50);
+                 salvaCompra(compra1,compras);
+                 Compra *compra2 = criaCompra(2, 102, "987.654.321-00", 20, 3, 75.75);
+                 salvaCompra(compra2,compras);
+                Compra *compra3 = criaCompra(3, 103, "456.789.123-00", 30, 7, 200.00);
+                salvaCompra(compra3,compras);
+                imprimirBaseCompra(compras);
                 break;
 
             case 16:
                 printf("\nBuscar Compras selecionado.\n");
+                p = buscaSequencialCompra(3,compras);
+                 if(p != NULL)
+                    (imprimeCompra(p));
+                free(p);
+                
                 break;
 
             case 17:
