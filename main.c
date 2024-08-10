@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     Cliente *c;
     Funcionario *f;
 
-    do {
+    do { 
         printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<<<<<<");
         printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> OPCOES DE MENU <<<<<<<<<<<<<<<<<<<<<<<<\n");
 
@@ -77,14 +77,14 @@ int main(int argc, char** argv) {
                 break;
 
             case 1:
-                printf("Criando base de discos desordenada...\n");
+                printf("\nCriando base de discos desordenada...\n");
                 criarBaseDesordenadaDisco(discos, quantidadeDiscos, quantidadeTrocas);
                 imprimirBaseDisco(discos);
                 break;
                 break;
 
             case 2:
-                printf("Cadastrar Disco selecionado.\n");
+                printf("\nCadastrar Disco selecionado.\n");
                 d = criaDisco(50,"novo","Anonimo", "rock",2015,50.45,5);
                 salvaDisco(d, discos);
                 free(d);
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
                 break;
 
             case 3:
-                printf("Buscar Discos (Sequencial) selecionado.\n");
+                printf("\nBuscar Discos (Sequencial) selecionado.\n");
                 d = buscaSequencialDisco(5,discos);
                 if(d != NULL)
                     (imprimeDisco(d));
@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
                 break;
 
             case 4:
-                printf("Buscar Discos (Binaria) selecionado.\n");
+                printf("\nBuscar Discos (Binaria) selecionado.\n");
                 int tamanho = ftell(discos) / tamanhoRegistroDisco();
                 d = buscaBinariaDisco(6,discos,0,tamanho - 1);
                 if(d != NULL)
@@ -109,64 +109,108 @@ int main(int argc, char** argv) {
                 free(d);  
                 break;
 
-            case 5:
-                printf("Atualizar Disco selecionado.\n");
+            case 5:{
+                printf("\nAtualizar Disco selecionado.\n");
+                
+                int id;
+                printf("Digite o ID do disco que deseja atualizar: ");
+                scanf("%d", &id);
+                
+                // Busca o disco com base no ID
+                Disco *d = buscaSequencialDisco(id, discos);
+                if (d == NULL) {
+                    printf("Disco com ID %d não encontrado!\n", id);
+                    break;
+                }
+
+                printf("Disco encontrado:\n");
+                 if(d != NULL)
+                    (imprimeDisco(d));
+
+                // Pedir novos dados para atualizar o disco
+                printf("Digite os novos dados para o disco:\n");
+                printf("Titulo: ");
+                scanf("%s", d->titulo);
+                printf("Artista: ");
+                scanf("%s", d->artista);
+                printf("Genero: ");
+                scanf("%s", d->genero);
+                printf("Ano: ");
+                scanf("%d", &d->ano);
+                printf("Preco: ");
+                scanf("%f", &d->preco);
+                printf("Estoque: ");
+                scanf("%d", &d->estoque);
+
+                // Reposiciona o cursor do arquivo para o início do registro
+                long posicao = ftell(discos) - tamanhoRegistroDisco();
+                fseek(discos, posicao, SEEK_SET);
+
+                // Grava o disco atualizado no arquivo
+                salvaDisco(d, discos);
+
+                printf("Disco atualizado com sucesso!\n");
+
+                free(d);
+                imprimirBaseDisco(discos);
                 break;
+            }
+
 
             case 6:
-                printf("Ordenar Disco selecionado.\n");
+                printf("\nOrdenar Disco selecionado.\n");
                 break;
 
             case 7:
-                printf("Criar Base Funcionarios Desordenada selecionado.\n");
+                printf("\nCriar Base Funcionarios Desordenada selecionado.\n");
                 break;
 
             case 8:
-                printf("Cadastrar Funcionario selecionado.\n");
+                printf("\nCadastrar Funcionario selecionado.\n");
                 break;
 
             case 9:
-                printf("Buscar Funcionarios (Sequencial) selecionado.\n");
+                printf("\nBuscar Funcionarios (Sequencial) selecionado.\n");
                 break;
 
             case 10:
-                printf("Buscar Funcionarios (Binaria) selecionado.\n");
+                printf("\nBuscar Funcionarios (Binaria) selecionado.\n");
                 break;
 
             case 11:
-                printf("Ordenar Funcionario selecionado.\n");
+                printf("\nOrdenar Funcionario selecionado.\n");
                 break;
 
             case 12:
-                printf("Criar Base Clientes Desordenada selecionado.\n");
+                printf("\nCriar Base Clientes Desordenada selecionado.\n");
                 break;
 
             case 13:
-                printf("Cadastrar Cliente selecionado.\n");
+                printf("\nCadastrar Cliente selecionado.\n");
                 break;
 
             case 14:
-                printf("Buscar Cliente selecionado.\n");
+                printf("\nBuscar Cliente selecionado.\n");
                 break;
 
             case 15:
-                printf("Cadastrar Compra selecionado.\n");
+                printf("\nCadastrar Compra selecionado.\n");
                 break;
 
             case 16:
-                printf("Buscar Compras selecionado.\n");
+                printf("\nBuscar Compras selecionado.\n");
                 break;
 
             case 17:
-                printf("Excluir Compra selecionado.\n");
+                printf("\nExcluir Compra selecionado.\n");
                 break;
 
             case 18:
-                printf("Gerar Relatorio de Compras selecionado.\n");
+                printf("\nGerar Relatorio de Compras selecionado.\n");
                 break;
 
             default:
-                printf("Opcao invalida!\n");
+                printf("\nOpcao invalida!\n");
                 break;
         }
     } while (opcao != 0);
