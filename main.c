@@ -118,6 +118,7 @@ int main(int argc, char** argv) {
             case 6:
                 printf("\nOrdenar Disco selecionado.\n");
                 tamanho = qtdRegistrosDisco(discos);
+                printf("Tamanho: %d\n", tamanho);
                 bubbleSortDiscos(discos, tamanho);
                 printf("Base de dados ordenada:\n");
                 imprimirBaseDisco(discos);
@@ -158,6 +159,7 @@ int main(int argc, char** argv) {
             case 11:
                 printf("\n11. Ordenar Funcionario selecionada.\n");
                 printf("Base de dados ordenada:\n");
+                bubbleSortFuncionarios(funcionarios, quantidadeDeRegistros);
                 imprimirBaseFuncionario(funcionarios);
                 break;
 
@@ -200,6 +202,7 @@ int main(int argc, char** argv) {
 
             case 18:
                 printf("\nGerar Relatorio de Compras selecionado.\n");
+                 imprimirBaseFuncionario(funcionarios);
                 break;
 
             default:
