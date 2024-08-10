@@ -3,6 +3,7 @@
         "interface.h": "c",
         "stdlib.h": "c",
         "funcionario.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "disco.h": "c"
     }
 }

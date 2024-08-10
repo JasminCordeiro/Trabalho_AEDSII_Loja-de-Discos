@@ -1,12 +1,12 @@
-#ifndef FUNCIONARIO_H
-#define FUNCIONARIO_H
+#ifndef funcionario_H
+#define funcionario_H
 
 #include <stdlib.h>
 #include <stdio.h>
 
 typedef struct {
     int id;             
-    char nome[100];     
+    char nome[50];     
     char cpf[15];       
 } Funcionario;
 
@@ -14,7 +14,7 @@ typedef struct {
 Funcionario *criaFuncionario(int id, const char *nome, const char *cpf);
 
 // Função para salvar um funcionário em um arquivo
-void salvaFuncionario(Funcionario *func, FILE *out);
+void salvaFuncionario(Funcionario *func, FILE *arq);
 
 // Função para ler um funcionário de um arquivo
 Funcionario *leFuncionario(FILE *in);
@@ -29,14 +29,22 @@ int tamanhoRegistroFuncionario();
 int qtdRegistrosFuncionario(FILE *arq);
 
 // Função para criar uma base de dados ordenada pelo ID do funcionário
-void criarBaseOrdenadaFuncionario(FILE *out, int tam);
+void criarBaseOrdenadaFuncionario(FILE *arq, int tam);
 
 // Função para embaralhar uma base de dados
 void embaralhaFuncionario(int *vet, int max, int trocas);
 
 // Função para criar uma base de dados desordenada pelo ID do funcionário
-void criarBaseDesordenadaFuncionario(FILE *out, int tam, int qtdTrocas);
+void criarBaseDesordenadaFuncionario(FILE *arq, int tam, int qtdTrocas);
 
 // Função para imprimir a base de dados
-void imprimirBaseFuncionario(FILE *out);
+void imprimirBaseFuncionario(FILE *arq);
+
+// Realiza Busca sequencial em Funcionarios
+Funcionario *buscaSequencialFuncionario(int id, FILE *arq);
+
+// Realiza Busca Binaria em Funcionarios
+Funcionario *buscaBinariaFuncionario(int id, FILE *arq, int inicio, int fim);
+
+void bubbleSortFuncionarios(FILE *arq, int tam);
 #endif

@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDiscos = 10;
+    int quantidadeDeRegistros = 10;
     int quantidadeTrocas = 8;
     
     int opcao;
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 
             case 1:
                 printf("\nCriando base de discos desordenada...\n");
-                criarBaseDesordenadaDisco(discos, quantidadeDiscos, quantidadeTrocas);
+                criarBaseDesordenadaDisco(discos, quantidadeDeRegistros, quantidadeTrocas);
                 imprimirBaseDisco(discos);
                 break;
 
@@ -89,7 +89,6 @@ int main(int argc, char** argv) {
                 salvaDisco(d, discos);
                 free(d);
                 imprimirBaseDisco(discos);
-
                 break;
 
             case 3:
@@ -109,13 +108,12 @@ int main(int argc, char** argv) {
                 free(d);  
                 break;
 
-            case 5:{
+            case 5:
                 printf("\nAtualizar Disco selecionado.\n");
                 atualizaDisco(discos);
                 imprimirBaseDisco(discos);
                 break;
-            }
-
+            
 
             case 6:
                 printf("\nOrdenar Disco selecionado.\n");
@@ -127,28 +125,46 @@ int main(int argc, char** argv) {
 
             case 7:
                 printf("\nCriar Base Funcionarios Desordenada selecionado.\n");
+                printf("\nCriando base de funcionario desordenada...\n");
+                criarBaseDesordenadaFuncionario(funcionarios, quantidadeDeRegistros, quantidadeTrocas);
+                imprimirBaseFuncionario(funcionarios);
                 break;
 
             case 8:
                 printf("\nCadastrar Funcionario selecionado.\n");
+                f = criaFuncionario(50,"novo","000.000.000-01");
+                salvaFuncionario(f, funcionarios);
+                free(f);
+                imprimirBaseFuncionario(funcionarios);
                 break;
 
             case 9:
                 printf("\nBuscar Funcionarios (Sequencial) selecionado.\n");
+                f = buscaSequencialFuncionario(5,funcionarios);
+                if(f != NULL)
+                    (imprimeFuncionario(f));
+                free(f);  
                 break;
 
             case 10:
                 printf("\nBuscar Funcionarios (Binaria) selecionado.\n");
+                tamanho = ftell(funcionarios) / tamanhoRegistroFuncionario();
+                f = buscaBinariaFuncionario(6,funcionarios,0,tamanho - 1);
+                if(f != NULL)
+                    (imprimeFuncionario(f));
+                free(f);  
                 break;
 
             case 11:
-                printf("\nOrdenar Funcionario selecionado.\n");
+                printf("\n11. Ordenar Funcionario selecionada.\n");
+                printf("Base de dados ordenada:\n");
+                imprimirBaseFuncionario(funcionarios);
                 break;
 
             case 12:
                 printf("\nCriar Base Clientes Desordenada selecionado.\n");
                 printf("\nCriando base de discos desordenada...\n");
-                criarBaseDesordenadaCliente(clientes, quantidadeDiscos, quantidadeTrocas);
+                criarBaseDesordenadaCliente(clientes, quantidadeDeRegistros, quantidadeTrocas);
                 imprimirBaseCliente(clientes);
                 break;
 

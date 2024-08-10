@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 // Cria funcionario.
 Funcionario *criaFuncionario(int id, const char *nome, const char *cpf) {
@@ -14,11 +15,11 @@ Funcionario *criaFuncionario(int id, const char *nome, const char *cpf) {
     return func;
 }
 
-// Salva funcionario no arquivo out, na posição atual do cursor
-void salvaFuncionario(Funcionario *func, FILE *out) {
-    fwrite(&func->id, sizeof(int), 1, out);
-    fwrite(func->nome, sizeof(char), sizeof(func->nome), out);
-    fwrite(func->cpf, sizeof(char), sizeof(func->cpf), out);
+// Salva funcionario no arquivo arq, na posição atual do cursor
+void salvaFuncionario(Funcionario *func, FILE *arq) {
+    fwrite(&func->id, sizeof(int), 1, arq);
+    fwrite(func->nome, sizeof(char), sizeof(func->nome), arq);
+    fwrite(func->cpf, sizeof(char), sizeof(func->cpf), arq);
 }
 
 // Lê um funcionário do arquivo na posição atual do cursor
@@ -50,6 +51,7 @@ int tamanhoRegistroFuncionario() {
            + sizeof(char) * 15; // cpf
 }
 
+
 // Retorna a quantidade de registros no arquivo
 int qtdRegistrosFuncionario(FILE *arq) {
     fseek(arq, 0, SEEK_END);
@@ -58,7 +60,7 @@ int qtdRegistrosFuncionario(FILE *arq) {
 }
 
 // Cria a base de dados ordenada pelo ID do funcionário
-void criarBaseOrdenadaFuncionario(FILE *out, int tam) {
+void criarBaseOrdenadaFuncionario(FILE *arq, int tam) {
     int vet[tam];
     Funcionario *f;
 
@@ -69,7 +71,7 @@ void criarBaseOrdenadaFuncionario(FILE *out, int tam) {
 
     for (int i = 0; i < tam; i++) {
         f = criaFuncionario(vet[i], "A", "000.000.000-00");
-        salvaFuncionario(f, out);
+        salvaFuncionario(f, arq);
     }
 
     free(f);
@@ -88,34 +90,131 @@ void embaralhaFuncionario(int *vet, int max, int trocas) {
 }
 
 // Cria a base de dados desordenada pelo ID do funcionário
-void criarBaseDesordenadaFuncionario(FILE *out, int tam, int qtdTrocas) {
+void criarBaseDesordenadaFuncionario(FILE *arq, int tam, int qtdTrocas) {
     int vet[tam];
     Funcionario *f;
 
+    // Inicializa o gerador de números aleatórios
+    srand(time(NULL));
+
+    // Preenche o vetor com IDs
     for (int i = 0; i < tam; i++)
         vet[i] = i + 1;
 
+    // Embaralha o vetor de IDs para garantir a desordem
     embaralhaFuncionario(vet, tam, qtdTrocas);
 
     printf("\nGerando a base de dados...\n");
 
+    // Cria e salva os funcionários no arquivo
     for (int i = 0; i < tam; i++) {
-        f = criaFuncionario(vet[i], "A", "000.000.000-00");
-        salvaFuncionario(f, out);
+        // Geração de dados aleatórios
+        char cpf[15];
+        snprintf(cpf, 15, "%03d.%03d.%03d-%02d", 
+                 rand() % 1000, rand() % 1000, rand() % 1000, rand() % 100);
+
+        // Cria o funcionário com dados aleatórios
+        f = criaFuncionario(vet[i], "Nome", cpf);
+
+        // Salva o funcionário no arquivo
+        salvaFuncionario(f, arq);
+
+        // Libera a memória alocada para o funcionário
+        free(f);
     }
+}
+
+// Imprime a base de dados
+void imprimirBaseFuncionario(FILE *arq) {
+    printf("Imprimindo a base de dados...\n");
+
+    rewind(arq);
+    Funcionario *f;
+
+    while ((f = leFuncionario(arq)) != NULL)
+        imprimeFuncionario(f);
 
     free(f);
 }
 
-// Imprime a base de dados
-void imprimirBaseFuncionario(FILE *out) {
-    printf("Imprimindo a base de dados...\n");
+Funcionario *buscaSequencialFuncionario(int chave, FILE *arq){
 
-    rewind(out);
     Funcionario *f;
+    int achou;
+    rewind(arq);
+    while ((f = leFuncionario(arq)) != NULL){
 
-    while ((f = leFuncionario(out)) != NULL)
-        imprimeFuncionario(f);
+        if(f->id == chave){
+           //return d;
+           achou = 1;
+           break;
+        }
+    }
+        if(achou == 1)
+            return f;
+        else printf("Funcionario nao encontrado");
 
-    free(f);
+        free(f);
+}
+
+Funcionario* buscaBinariaFuncionario(int id, FILE* arq, int inicio, int fim) {
+    while (inicio <= fim) {
+        int meio = inicio + (fim - inicio) / 2;
+        fseek(arq, meio * tamanhoRegistroFuncionario(), SEEK_SET);
+
+        Funcionario *f = leFuncionario(arq);
+
+        if (f->id == id) {
+            return f;
+        }
+         if (f->id > id) {
+            fim = meio - 1;
+        } else {
+            inicio = meio + 1;
+        }
+        free(f);
+    }
+    return NULL;
+}
+
+// Função para ordenar os funcionários no arquivo usando o Bubble Sort
+void bubbleSortFuncionarios(FILE *arq, int tam) {
+    Funcionario *funcAtual = NULL;
+    Funcionario *funcProximo = NULL;
+    int trocou;
+
+    // Executa o Bubble Sort
+    for (int i = 0; i < tam - 1; i++) {
+        trocou = 0;
+        for (int j = 0; j < tam - i - 1; j++) {
+            // Posiciona o cursor no início do funcionário atual
+            fseek(arq, j * tamanhoRegistroFuncionario(), SEEK_SET);
+            funcAtual = leFuncionario(arq);
+
+            // Posiciona o cursor no início do próximo funcionário
+            fseek(arq, (j + 1) * tamanhoRegistroFuncionario(), SEEK_SET);
+            funcProximo = leFuncionario(arq);
+
+            // Compara os IDs dos funcionários
+            if (funcAtual->id > funcProximo->id) {
+                // Troca os funcionários de lugar no arquivo
+                fseek(arq, j * tamanhoRegistroFuncionario(), SEEK_SET);
+                salvaFuncionario(funcProximo, arq);
+
+                fseek(arq, (j + 1) * tamanhoRegistroFuncionario(), SEEK_SET);
+                salvaFuncionario(funcAtual, arq);
+
+                trocou = 1;
+            }
+
+            // Libera a memória alocada para os funcionários
+            free(funcAtual);
+            free(funcProximo);
+        }
+
+        // Se nenhuma troca foi feita, a lista já está ordenada
+        if (!trocou) {
+            break;
+        }
+    }
 }
