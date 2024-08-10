@@ -52,4 +52,6 @@ Disco *buscaSequencialDisco(int id, FILE *arq);
 // Realiza Busca Binaria em discos
 Disco *buscaBinariaDisco(int id, FILE *arq, int inicio, int fim);
 
+void atualizaDisco(FILE *arq);
+
 #endif

@@ -111,47 +111,7 @@ int main(int argc, char** argv) {
 
             case 5:{
                 printf("\nAtualizar Disco selecionado.\n");
-                
-                int id;
-                printf("Digite o ID do disco que deseja atualizar: ");
-                scanf("%d", &id);
-                
-                // Busca o disco com base no ID
-                Disco *d = buscaSequencialDisco(id, discos);
-                if (d == NULL) {
-                    printf("Disco com ID %d não encontrado!\n", id);
-                    break;
-                }
-
-                printf("Disco encontrado:\n");
-                 if(d != NULL)
-                    (imprimeDisco(d));
-
-                // Pedir novos dados para atualizar o disco
-                printf("Digite os novos dados para o disco:\n");
-                printf("Titulo: ");
-                scanf("%s", d->titulo);
-                printf("Artista: ");
-                scanf("%s", d->artista);
-                printf("Genero: ");
-                scanf("%s", d->genero);
-                printf("Ano: ");
-                scanf("%d", &d->ano);
-                printf("Preco: ");
-                scanf("%f", &d->preco);
-                printf("Estoque: ");
-                scanf("%d", &d->estoque);
-
-                // Reposiciona o cursor do arquivo para o início do registro
-                long posicao = ftell(discos) - tamanhoRegistroDisco();
-                fseek(discos, posicao, SEEK_SET);
-
-                // Grava o disco atualizado no arquivo
-                salvaDisco(d, discos);
-
-                printf("Disco atualizado com sucesso!\n");
-
-                free(d);
+                atualizaDisco(discos);
                 imprimirBaseDisco(discos);
                 break;
             }
