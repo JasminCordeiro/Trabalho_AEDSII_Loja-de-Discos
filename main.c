@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
     Disco *d;
     Cliente *c;
     Funcionario *f;
+    int tamanho;
 
     do { 
         printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<<<<<<");
@@ -81,7 +82,6 @@ int main(int argc, char** argv) {
                 criarBaseDesordenadaDisco(discos, quantidadeDiscos, quantidadeTrocas);
                 imprimirBaseDisco(discos);
                 break;
-                break;
 
             case 2:
                 printf("\nCadastrar Disco selecionado.\n");
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
 
             case 4:
                 printf("\nBuscar Discos (Binaria) selecionado.\n");
-                int tamanho = ftell(discos) / tamanhoRegistroDisco();
+                tamanho = qtdRegistrosDisco(discos);
                 d = buscaBinariaDisco(6,discos,0,tamanho - 1);
                 if(d != NULL)
                     (imprimeDisco(d));
@@ -119,8 +119,8 @@ int main(int argc, char** argv) {
 
             case 6:
                 printf("\nOrdenar Disco selecionado.\n");
-                int tam = qtdRegistrosDisco(discos);
-                bubbleSortDiscos(discos, tam);
+                tamanho = qtdRegistrosDisco(discos);
+                bubbleSortDiscos(discos, tamanho);
                 printf("Base de dados ordenada:\n");
                 imprimirBaseDisco(discos);
                 break;
@@ -147,14 +147,27 @@ int main(int argc, char** argv) {
 
             case 12:
                 printf("\nCriar Base Clientes Desordenada selecionado.\n");
+                printf("\nCriando base de discos desordenada...\n");
+                criarBaseDesordenadaCliente(clientes, quantidadeDiscos, quantidadeTrocas);
+                imprimirBaseCliente(clientes);
                 break;
 
             case 13:
                 printf("\nCadastrar Cliente selecionado.\n");
+                c = criaCliente(50,"constantino","144.000.000-00","4454-4544");
+                salvaCliente(c, clientes);
+                free(c);
+                imprimirBaseCliente(clientes);
+
                 break;
 
             case 14:
                 printf("\nBuscar Cliente selecionado.\n");
+                  printf("\nBuscar Cliente (Sequencial) selecionado.\n");
+                c = buscaSequencialCliente(5,clientes);
+                if(c != NULL)
+                    (imprimeCliente(c));
+                free(c);    
                 break;
 
             case 15:

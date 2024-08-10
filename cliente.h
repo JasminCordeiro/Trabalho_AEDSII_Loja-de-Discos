@@ -14,8 +14,8 @@ typedef struct {
 // Cria cliente.
 Cliente *criaCliente(int id, const char *nome, const char *cpf, const char *telefone);
 
-// Salva cliente no arquivo out, na posição atual do cursor
-void salvaCliente(Cliente *cliente, FILE *out);
+// Salva cliente no arquivo arq, na posição atual do cursor
+void salvaCliente(Cliente *cliente, FILE *arq);
 
 // Lê um cliente do arquivo na posição atual do cursor
 // Retorna um ponteiro para o cliente lido do arquivo
@@ -31,15 +31,17 @@ int tamanhoRegistroCliente();
 int qtdRegistrosCliente(FILE *arq);
 
 // Cria a base de dados ordenada pelo ID do cliente
-void criarBaseOrdenadaCliente(FILE *out, int tam);
+void criarBaseOrdenadaCliente(FILE *arq, int tam);
 
 // Embaralha base de dados
 void embaralhaCliente(int *vet, int max, int trocas);
 
 // Cria a base de dados desordenada pelo ID do cliente
-void criarBaseDesordenadaCliente(FILE *out, int tam, int qtdTrocas);
+void criarBaseDesordenadaCliente(FILE *arq, int tam, int qtdTrocas);
 
 // Imprime a base de dados
-void imprimirBaseCliente(FILE *out);
+void imprimirBaseCliente(FILE *arq);
+
+Cliente *buscaSequencialCliente(int chave, FILE *arq);
 
 #endif
