@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
     Funcionario *f;
     Compra *p;
     int tamanho;
+    int quantidade =2;
 
     do { 
         printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<<<<<<");
@@ -191,13 +192,22 @@ int main(int argc, char** argv) {
 
             case 15:
                 printf("\nCadastrar Compra selecionado.\n");
-                 Compra *compra1 = criaCompra(1, 101, 5, 10, 5, 100.50);
-                 salvaCompra(compra1,compras);
-                 Compra *compra2 = criaCompra(2, 102, 6, 20, 3, 75.75);
-                 salvaCompra(compra2,compras);
-                Compra *compra3 = criaCompra(3, 103, 7, 30, 7, 200.00);
-                salvaCompra(compra3,compras);
+
+                d = buscaSequencialDisco(9, discos);
+                c = buscaSequencialCliente(5, clientes);
+                f = buscaSequencialFuncionario(10, funcionarios);
+                
+                  if (d != NULL && c != NULL && f != NULL && d->estoque >= quantidade) {
+                // Cria uma nova compra
+                Compra *compra1 = criaCompra(1, 9, 5, 10,  5, d->preco);
+                 //atualizaEstoqueDisco(id_disco, quantidade)
+      
+                    salvaCompra(compra1, compras);
+  
+                    free(compra1);
+                  }
                 imprimirBaseCompra(compras);
+                
                 break;
 
             case 16:
