@@ -7,13 +7,14 @@
 typedef struct {
     int id;             
     int disco_id;       
-    char cpf_cliente[15];
+    int id_cliente;  
     int id_funcionario; 
     int quantidade;     
     float valor_total; 
 } Compra;
 
-Compra* criaCompra(int id, int disco_id, const char *cpf_cliente, int id_funcionario, int quantidade, float valor_total);
+// Funções para manipulação de compras
+Compra* criaCompra(int id, int disco_id, int id_cliente, int id_funcionario, int quantidade, float valor_total);
 
 void salvaCompra(Compra *compra, FILE *arq); 
 

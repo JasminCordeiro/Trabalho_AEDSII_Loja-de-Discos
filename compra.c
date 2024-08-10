@@ -2,17 +2,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
-Compra* criaCompra(int id, int disco_id, const char *cpf_cliente, int id_funcionario, int quantidade, float valor_total) {
-    // Aloca memória para a nova instância de Compra
+// Cria uma nova instância de Compra
+Compra* criaCompra(int id, int disco_id, int id_cliente, int id_funcionario, int quantidade, float valor_total) {
     Compra *compra = (Compra *)malloc(sizeof(Compra));
-    if (compra) memset(compra, 0, sizeof(Compra)); // Inicializa a memória alocada com zero
+    if (compra) memset(compra, 0, sizeof(Compra));
 
-    // Preenche os campos da estrutura com os valores fornecidos
     compra->id = id;
     compra->disco_id = disco_id;
-    strncpy(compra->cpf_cliente, cpf_cliente, sizeof(compra->cpf_cliente) - 1);
+    compra->id_cliente = id_cliente;
     compra->id_funcionario = id_funcionario;
     compra->quantidade = quantidade;
     compra->valor_total = valor_total;
@@ -20,26 +18,29 @@ Compra* criaCompra(int id, int disco_id, const char *cpf_cliente, int id_funcion
     return compra;
 }
 
+// Salva uma instância de Compra em um arquivo
 void salvaCompra(Compra *compra, FILE *arq) {
     fwrite(&compra->id, sizeof(int), 1, arq);
     fwrite(&compra->disco_id, sizeof(int), 1, arq);
-    fwrite(compra->cpf_cliente, sizeof(char), sizeof(compra->cpf_cliente), arq);
+    fwrite(&compra->id_cliente, sizeof(int), 1, arq);
     fwrite(&compra->id_funcionario, sizeof(int), 1, arq);
     fwrite(&compra->quantidade, sizeof(int), 1, arq);
     fwrite(&compra->valor_total, sizeof(float), 1, arq);
 }
 
+// Imprime uma instância de Compra
 void imprimeCompra(Compra *compra) {
     printf("**********************************************\n");
     printf("Compra de ID: %d\n", compra->id);
     printf("Disco ID: %d\n", compra->disco_id);
-    printf("CPF Cliente: %s\n", compra->cpf_cliente);
+    printf("ID Cliente: %d\n", compra->id_cliente);
     printf("ID Funcionario: %d\n", compra->id_funcionario);
     printf("Quantidade: %d\n", compra->quantidade);
     printf("Valor Total: %.2f\n", compra->valor_total);
     printf("**********************************************\n");
 }
 
+// Imprime todas as compras presentes no arquivo
 void imprimirBaseCompra(FILE *arq) {
     printf("Imprimindo a base de dados...\n");
 
@@ -52,16 +53,16 @@ void imprimirBaseCompra(FILE *arq) {
     }
 }
 
+// Lê uma instância de Compra de um arquivo
 Compra *leCompra(FILE *in) {
     Compra *compra = (Compra *)malloc(sizeof(Compra));
-   
-    // Lê os dados do arquivo para a estrutura Compra
-      if (fread(&compra->id, sizeof(int), 1, in) != 1) {
+
+    if (fread(&compra->id, sizeof(int), 1, in) != 1) {
         free(compra);
         return NULL;
     }
     fread(&compra->disco_id, sizeof(int), 1, in);
-    fread(compra->cpf_cliente, sizeof(char), sizeof(compra->cpf_cliente), in);
+    fread(&compra->id_cliente, sizeof(int), 1, in);
     fread(&compra->id_funcionario, sizeof(int), 1, in);
     fread(&compra->quantidade, sizeof(int), 1, in);
     fread(&compra->valor_total, sizeof(float), 1, in);
@@ -69,22 +70,22 @@ Compra *leCompra(FILE *in) {
     return compra;
 }
 
-Compra *buscaSequencialCompra(int chave, FILE *arq){
-
+// Busca uma Compra por ID no arquivo
+Compra *buscaSequencialCompra(int chave, FILE *arq) {
     Compra *p;
-    int achou;
+    int achou = 0;
     rewind(arq);
-    while ((p = leCompra(arq)) != NULL){
-
-        if(p->id == chave){
-           //return d;
-           achou = 1;
-           break;
+    while ((p = leCompra(arq)) != NULL) {
+        if (p->id == chave) {
+            achou = 1;
+            break;
         }
     }
-        if(achou == 1)
-            return p;
-        else printf("Compra nao encontrado");
-
+    if (achou == 1)
+        return p;
+    else {
+        printf("Compra não encontrada\n");
         free(p);
+        return NULL;
+    }
 }
