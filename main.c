@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 5;
-    int quantidadeTrocas = 2;
+    int quantidadeDeRegistros = 1000;
+    int quantidadeTrocas = 333;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -252,18 +252,15 @@ int main(int argc, char** argv) {
 
                         printf("\nCompra realizada com sucesso!\n");
                         imprimirBaseCompra(compras);
+                        imprimeDisco(d);
                         free(compra);
                     } else {
                         printf("\nFalha na compra. Verifique o estoque e as informacoes fornecidas.\n");
                     }
 
-                   
-
-                    if (d != NULL) imprimeDisco(d);
-
-                    if (d != NULL) free(d);
-                    if (c != NULL) free(c);
-                    if (f != NULL) free(f);
+                free(d);
+                free(c);
+                free(f);
                 
                 break;
 
