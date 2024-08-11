@@ -194,7 +194,7 @@ int main(int argc, char** argv) {
                 printf("\nCadastrar Compra selecionado.\n");
 
                 int quantidade;
-                int id_disco, id_cliente, id_funcionario;
+                int id_disco, id_cliente, id_funcionario,id_compra;
                 Compra *compra;
 
                     printf("\nCadastrar nova Compra\n");
@@ -212,7 +212,9 @@ int main(int argc, char** argv) {
                     Funcionario *f = buscaSequencialFuncionario(id_funcionario, funcionarios);
 
                     if (d != NULL && c != NULL && f != NULL && d->estoque >= quantidade) {
-                        compra = criaCompra(id_disco, id_cliente, id_funcionario, quantidade, d->preco*quantidade);
+                        id_compra = obterUltimoIdCompra(compras);
+                        compra = criaCompra(id_compra + 1, id_disco, id_cliente, id_funcionario, quantidade, d->preco*quantidade);
+                        
 
                         salvaCompra(compra, compras);
                         d->estoque -= quantidade;
