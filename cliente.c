@@ -157,7 +157,9 @@ Cliente *buscaSequencialCliente(int chave, FILE *arq){
     }
         if(achou == 1)
             return c;
-        else printf("Cliente nao encontrado");
-
-        free(c);
+           else {
+            printf("Cliente nao encontrada\n");
+            free(c);
+            return NULL;
+    }
 }

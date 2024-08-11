@@ -6,17 +6,16 @@
 #include "funcionario.h"
 
 int main(int argc, char** argv) {
-            const char *verde = "\x1b[32m"; 
-            const char *resetar = "\x1b[0m";   // Resetar cor
-            const char *azul = "\x1b[34m";  // azul
-
+    const char *verde = "\x1b[32m"; 
+    const char *resetar = "\x1b[0m";   // Resetar cor
+    const char *azul = "\x1b[34m";  // azul
 
     FILE *compras;
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 10;
-    int quantidadeTrocas = 8;
+    int quantidadeDeRegistros = 5;
+    int quantidadeTrocas = 2;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -41,7 +40,7 @@ int main(int argc, char** argv) {
     Funcionario *f;
     Compra *p;
     int tamanho;
-    int quantidade =2;
+    int id_cadastro;
 
     do { 
         printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<%s", verde, resetar);
@@ -91,15 +90,25 @@ int main(int argc, char** argv) {
 
             case 2:
                 printf("\nCadastrar Disco selecionado.\n");
-                d = criaDisco(50,"novo","Anonimo", "rock",2015,50.45,5);
-                salvaDisco(d, discos);
+                printf("\nInforme o id:\n");
+                scanf("%d" , &id_cadastro );
+                d = buscaSequencialDisco(id_cadastro,discos);
+                if(d == NULL) {
                 free(d);
+                d = criaDisco(id_cadastro,"novo","Anonimo", "rock",2015,50.45,5);
+                salvaDisco(d, discos);
                 imprimirBaseDisco(discos);
+                }
+                else {
+                    printf("Id ja existe ");
+                }
+                free(d);
+                
                 break;
 
             case 3:
                 printf("\nBuscar Discos (Sequencial) selecionado.\n");
-                d = buscaSequencialDisco(5,discos);
+                d = buscaSequencialDisco(1001,discos);
                 if(d != NULL)
                     (imprimeDisco(d));
                 free(d);    
@@ -108,7 +117,7 @@ int main(int argc, char** argv) {
             case 4:
                 printf("\nBuscar Discos (Binaria) selecionado.\n");
                 tamanho = qtdRegistrosDisco(discos);
-                d = buscaBinariaDisco(6,discos,0,tamanho - 1);
+                d = buscaBinariaDisco(454,discos,0,tamanho - 1);
                 if(d != NULL)
                     (imprimeDisco(d));
                 free(d);  
@@ -124,7 +133,6 @@ int main(int argc, char** argv) {
             case 6:
                 printf("\nOrdenar Disco selecionado.\n");
                 tamanho = qtdRegistrosDisco(discos);
-                printf("Tamanho: %d\n", tamanho);
                 bubbleSortDiscos(discos, tamanho);
                 printf("Base de dados ordenada:\n");
                 imprimirBaseDisco(discos);
@@ -138,16 +146,23 @@ int main(int argc, char** argv) {
                 break;
 
             case 8:
-                printf("\nCadastrar Funcionario selecionado.\n");
-                f = criaFuncionario(50,"novo","000.000.000-01");
-                salvaFuncionario(f, funcionarios);
+                printf("\nInforme o id:\n");
+                scanf("%d" , &id_cadastro );
+                f = buscaSequencialFuncionario(id_cadastro, funcionarios);
+                if(f == NULL) {
                 free(f);
+                f = criaFuncionario(id_cadastro, "novo", "000.000.000-01");
+                salvaFuncionario(f, funcionarios);
                 imprimirBaseFuncionario(funcionarios);
+                } else {
+                printf("Id ja existe\n");
+                }
+                free(f);
                 break;
 
             case 9:
                 printf("\nBuscar Funcionarios (Sequencial) selecionado.\n");
-                f = buscaSequencialFuncionario(5,funcionarios);
+                f = buscaSequencialFuncionario(600,funcionarios);
                 if(f != NULL)
                     (imprimeFuncionario(f));
                 free(f);  
@@ -156,7 +171,7 @@ int main(int argc, char** argv) {
             case 10:
                 printf("\nBuscar Funcionarios (Binaria) selecionado.\n");
                 tamanho = ftell(funcionarios) / tamanhoRegistroFuncionario();
-                f = buscaBinariaFuncionario(6,funcionarios,0,tamanho - 1);
+                f = buscaBinariaFuncionario(600,funcionarios,0,tamanho - 1);
                 if(f != NULL)
                     (imprimeFuncionario(f));
                 free(f);  
@@ -178,17 +193,24 @@ int main(int argc, char** argv) {
 
             case 13:
                 printf("\nCadastrar Cliente selecionado.\n");
-                c = criaCliente(50,"constantino","144.000.000-00","4454-4544");
-                salvaCliente(c, clientes);
+                printf("\nInforme o id:\n");
+                scanf("%d" , &id_cadastro );
+                c = buscaSequencialCliente(id_cadastro, clientes);
+                if(c == NULL) {
+                    free(c);
+                    c = criaCliente(id_cadastro, "constantino", "144.000.000-00", "4454-4544");
+                    salvaCliente(c, clientes);
+                    imprimirBaseCliente(clientes);
+                } else {
+                    printf("Id ja existe\n");
+                }
                 free(c);
-                imprimirBaseCliente(clientes);
-
                 break;
 
             case 14:
                 printf("\nBuscar Cliente selecionado.\n");
                   printf("\nBuscar Cliente (Sequencial) selecionado.\n");
-                c = buscaSequencialCliente(5,clientes);
+                c = buscaSequencialCliente(754,clientes);
                 if(c != NULL)
                     (imprimeCliente(c));
                 free(c);    
@@ -229,12 +251,13 @@ int main(int argc, char** argv) {
                         salvaDisco(d, discos);
 
                         printf("\nCompra realizada com sucesso!\n");
+                        imprimirBaseCompra(compras);
                         free(compra);
                     } else {
                         printf("\nFalha na compra. Verifique o estoque e as informacoes fornecidas.\n");
                     }
 
-                    imprimirBaseCompra(compras);
+                   
 
                     if (d != NULL) imprimeDisco(d);
 

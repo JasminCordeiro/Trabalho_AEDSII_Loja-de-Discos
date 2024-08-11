@@ -152,9 +152,11 @@ Funcionario *buscaSequencialFuncionario(int chave, FILE *arq){
     }
         if(achou == 1)
             return f;
-        else printf("Funcionario nao encontrado");
-
+        else {
+        printf("Funcionario nao encontrada\n");
         free(f);
+        return NULL;
+    }
 }
 
 Funcionario* buscaBinariaFuncionario(int id, FILE* arq, int inicio, int fim) {
