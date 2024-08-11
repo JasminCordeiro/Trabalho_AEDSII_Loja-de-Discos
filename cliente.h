@@ -30,9 +30,6 @@ int tamanhoRegistroCliente();
 // Retorna a quantidade de registros no arquivo
 int qtdRegistrosCliente(FILE *arq);
 
-// Cria a base de dados ordenada pelo ID do cliente
-void criarBaseOrdenadaCliente(FILE *arq, int tam);
-
 // Embaralha base de dados
 void embaralhaCliente(int *vet, int max, int trocas);
 

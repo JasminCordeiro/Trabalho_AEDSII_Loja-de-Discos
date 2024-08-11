@@ -81,23 +81,6 @@ int qtdRegistrosDisco(FILE *arq) {
     return tam;
 }
 
-// Cria a base de dados ordenada pelo ID do disco
-void criarBaseOrdenadaDisco(FILE *arq, int tam) {
-    int vet[tam];
-    Disco *d;
-
-    for (int i = 0; i < tam; i++)
-        vet[i] = i + 1;
-
-    printf("\nGerando a base de dados...\n");
-
-    for (int i = 0; i < tam; i++) {
-        d = criaDisco(vet[i], "Titulo", "Artista", "Genero", 2022, 100.0 * i, 10 * i);
-        salvaDisco(d, arq);
-    }
-
-    free(d);
-}
 
 // Embaralha base de dados
 void embaralhaDisco(int *vet, int max, int trocas) {

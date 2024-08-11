@@ -34,9 +34,6 @@ int tamanhoRegistroDisco();
 // Retorna a quantidade de registros no arquivo
 int qtdRegistrosDisco(FILE *arq);
 
-// Cria a base de dados ordenada pelo ID do disco
-void criarBaseOrdenadaDisco(FILE *arq, int tam);
-
 // Embaralha base de dados
 void embaralhaDisco(int *vet, int max, int trocas);
 

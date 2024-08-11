@@ -59,24 +59,6 @@ int qtdRegistrosFuncionario(FILE *arq) {
     return tam;
 }
 
-// Cria a base de dados ordenada pelo ID do funcionário
-void criarBaseOrdenadaFuncionario(FILE *arq, int tam) {
-    int vet[tam];
-    Funcionario *f;
-
-    for(int i = 0; i < tam; i++)
-        vet[i] = i + 1;
-
-    printf("\nGerando a base de dados...\n");
-
-    for (int i = 0; i < tam; i++) {
-        f = criaFuncionario(vet[i], "A", "000.000.000-00");
-        salvaFuncionario(f, arq);
-    }
-
-    free(f);
-}
-
 // Embaralha base de dados
 void embaralhaFuncionario(int *vet, int max, int trocas) {
     srand(time(NULL));
@@ -137,29 +119,41 @@ void imprimirBaseFuncionario(FILE *arq) {
     free(f);
 }
 
-Funcionario *buscaSequencialFuncionario(int chave, FILE *arq){
-
+Funcionario *buscaSequencialFuncionario(int chave, FILE *arq) {
     Funcionario *f;
-    int achou;
-    rewind(arq);
-    while ((f = leFuncionario(arq)) != NULL){
+    int achou = 0;
+    clock_t start_time, end_time;
+    double cpu_time_used;
 
-        if(f->id == chave){
-           //return d;
-           achou = 1;
-           break;
+    start_time = clock(); // Captura o tempo inicial
+
+    rewind(arq);
+    while ((f = leFuncionario(arq)) != NULL) {
+        if (f->id == chave) {
+            achou = 1;
+            break;
         }
     }
-        if(achou == 1)
-            return f;
-        else {
-        printf("Funcionario nao encontrada\n");
+
+    end_time = clock(); // Captura o tempo final
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+
+    if (achou == 1) {
+        printf("Funcionario encontrado em %f segundos.\n", cpu_time_used);
+        return f;
+    } else {
+        printf("Funcionario nao encontrado. Tempo de busca: %f segundos.\n", cpu_time_used);
         free(f);
         return NULL;
     }
 }
 
 Funcionario* buscaBinariaFuncionario(int id, FILE* arq, int inicio, int fim) {
+    clock_t start_time, end_time;
+    double cpu_time_used;
+
+    start_time = clock(); // Captura o tempo inicial
+
     while (inicio <= fim) {
         int meio = inicio + (fim - inicio) / 2;
         fseek(arq, meio * tamanhoRegistroFuncionario(), SEEK_SET);
@@ -167,15 +161,24 @@ Funcionario* buscaBinariaFuncionario(int id, FILE* arq, int inicio, int fim) {
         Funcionario *f = leFuncionario(arq);
 
         if (f->id == id) {
+            end_time = clock(); // Captura o tempo final
+            cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+            printf("Funcionario encontrado em %f segundos.\n", cpu_time_used);
             return f;
         }
-         if (f->id > id) {
+
+        if (f->id > id) {
             fim = meio - 1;
         } else {
             inicio = meio + 1;
         }
         free(f);
     }
+
+    end_time = clock(); // Captura o tempo final
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+    printf("Funcionario nao encontrado. Tempo de busca: %f segundos.\n", cpu_time_used);
+    
     return NULL;
 }
 

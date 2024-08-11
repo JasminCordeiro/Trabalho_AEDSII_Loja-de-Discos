@@ -61,23 +61,7 @@ int qtdRegistrosCliente(FILE *arq) {
     return tam;
 }
 
-// Cria a base de dados ordenada pelo ID do cliente
-void criarBaseOrdenadaCliente(FILE *arq, int tam) {
-    int vet[tam];
-    Cliente *cliente;
 
-    for(int i = 0; i < tam; i++)
-        vet[i] = i + 1;
-
-    printf("\nGerando a base de dados...\n");
-
-    for (int i = 0; i < tam; i++) {
-        cliente = criaCliente(vet[i], "Nome", "000.000.000-00", "0000-0000");
-        salvaCliente(cliente, arq);
-    }
-
-    free(cliente);
-}
 
 // Embaralha base de dados
 void embaralhaCliente(int *vet, int max, int trocas) {
@@ -142,24 +126,31 @@ void imprimirBaseCliente(FILE *arq) {
     free(cliente);
 }
 
-Cliente *buscaSequencialCliente(int chave, FILE *arq){
-
+Cliente *buscaSequencialCliente(int chave, FILE *arq) {
     Cliente *c;
-    int achou;
-    rewind(arq);
-    while ((c = leCliente(arq)) != NULL){
+    int achou = 0;
+    clock_t start_time, end_time;
+    double cpu_time_used;
 
-        if(c->id == chave){
-           //return d;
-           achou = 1;
-           break;
+    start_time = clock(); // Captura o tempo inicial
+
+    rewind(arq);
+    while ((c = leCliente(arq)) != NULL) {
+        if (c->id == chave) {
+            achou = 1;
+            break;
         }
     }
-        if(achou == 1)
-            return c;
-           else {
-            printf("Cliente nao encontrada\n");
-            free(c);
-            return NULL;
+
+    end_time = clock(); // Captura o tempo final
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+
+    if (achou == 1) {
+        printf("Cliente encontrado em %f segundos.\n", cpu_time_used);
+        return c;
+    } else {
+        printf("Cliente nao encontrado. Tempo de busca: %f segundos.\n", cpu_time_used);
+        free(c);
+        return NULL;
     }
 }

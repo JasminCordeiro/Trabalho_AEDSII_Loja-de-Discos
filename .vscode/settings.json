@@ -4,6 +4,7 @@
         "stdlib.h": "c",
         "funcionario.h": "c",
         "stdio.h": "c",
-        "disco.h": "c"
+        "disco.h": "c",
+        "string.h": "c"
     }
 }

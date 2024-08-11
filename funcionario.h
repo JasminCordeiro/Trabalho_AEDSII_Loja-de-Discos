@@ -28,9 +28,6 @@ int tamanhoRegistroFuncionario();
 // Função para obter a quantidade de registros em um arquivo
 int qtdRegistrosFuncionario(FILE *arq);
 
-// Função para criar uma base de dados ordenada pelo ID do funcionário
-void criarBaseOrdenadaFuncionario(FILE *arq, int tam);
-
 // Função para embaralhar uma base de dados
 void embaralhaFuncionario(int *vet, int max, int trocas);
 
