@@ -3,12 +3,37 @@
 #include <stdlib.h>
 #include <string.h>
 
+int obterProximoIdCompra() {
+    FILE *arquivo = fopen("ultimo_id.txt", "r+");
+    int id_atual = 0;
+
+    if (arquivo != NULL) {
+        fscanf(arquivo, "%d", &id_atual);
+        id_atual++;
+        rewind(arquivo);
+        fprintf(arquivo, "%d", id_atual);
+        fclose(arquivo);
+    } else {
+        // Se o arquivo não existe, cria um com o ID inicial 1
+        arquivo = fopen("ultimo_id.txt", "w");
+        if (arquivo != NULL) {
+            id_atual = 1;
+            fprintf(arquivo, "%d", id_atual);
+            fclose(arquivo);
+        }
+    }
+
+    return id_atual;
+}
+
+
 // Cria uma nova instância de Compra
-Compra* criaCompra(int id, int disco_id, int id_cliente, int id_funcionario, int quantidade, float valor_total) {
+Compra* criaCompra(int disco_id, int id_cliente, int id_funcionario, int quantidade, float valor_total) {
+
     Compra *compra = (Compra *)malloc(sizeof(Compra));
     if (compra) memset(compra, 0, sizeof(Compra));
 
-    compra->id = id;
+    compra->id = obterProximoIdCompra();
     compra->disco_id = disco_id;
     compra->id_cliente = id_cliente;
     compra->id_funcionario = id_funcionario;
@@ -17,6 +42,9 @@ Compra* criaCompra(int id, int disco_id, int id_cliente, int id_funcionario, int
 
     return compra;
 }
+
+
+
 
 // Salva uma instância de Compra em um arquivo
 void salvaCompra(Compra *compra, FILE *arq) {

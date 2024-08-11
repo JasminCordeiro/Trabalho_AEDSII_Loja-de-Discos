@@ -14,7 +14,7 @@ typedef struct {
 } Compra;
 
 // Funções para manipulação de compras
-Compra* criaCompra(int id, int disco_id, int id_cliente, int id_funcionario, int quantidade, float valor_total);
+Compra* criaCompra(int disco_id, int id_cliente, int id_funcionario, int quantidade, float valor_total);
 
 void salvaCompra(Compra *compra, FILE *arq); 
 

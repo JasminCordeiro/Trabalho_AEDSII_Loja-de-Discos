@@ -193,20 +193,48 @@ int main(int argc, char** argv) {
             case 15:
                 printf("\nCadastrar Compra selecionado.\n");
 
-                d = buscaSequencialDisco(9, discos);
-                c = buscaSequencialCliente(5, clientes);
-                f = buscaSequencialFuncionario(10, funcionarios);
-                
-                  if (d != NULL && c != NULL && f != NULL && d->estoque >= quantidade) {
-                // Cria uma nova compra
-                Compra *compra1 = criaCompra(1, 9, 5, 10,  5, d->preco);
-                 //atualizaEstoqueDisco(id_disco, quantidade)
-      
-                    salvaCompra(compra1, compras);
-  
-                    free(compra1);
-                  }
-                imprimirBaseCompra(compras);
+                int quantidade;
+                int id_disco, id_cliente, id_funcionario;
+                Compra *compra;
+
+                    printf("\nCadastrar nova Compra\n");
+                    printf("Informe o ID do disco: ");
+                    scanf("%d", &id_disco);
+                    printf("Informe o ID do cliente: ");
+                    scanf("%d", &id_cliente);
+                    printf("Informe o ID do funcionario: ");
+                    scanf("%d", &id_funcionario);
+                    printf("Informe a quantidade de discos comprados: ");
+                    scanf("%d", &quantidade);
+
+                    Disco *d = buscaSequencialDisco(id_disco, discos);
+                    Cliente *c = buscaSequencialCliente(id_cliente, clientes);
+                    Funcionario *f = buscaSequencialFuncionario(id_funcionario, funcionarios);
+
+                    if (d != NULL && c != NULL && f != NULL && d->estoque >= quantidade) {
+                        compra = criaCompra(id_disco, id_cliente, id_funcionario, quantidade, d->preco*quantidade);
+
+                        salvaCompra(compra, compras);
+                        d->estoque -= quantidade;
+
+                        long posicao = ftell(discos) - tamanhoRegistroDisco();
+                        fseek(discos, posicao, SEEK_SET);
+                        
+                        salvaDisco(d, discos);
+
+                        printf("\nCompra realizada com sucesso!\n");
+                        free(compra);
+                    } else {
+                        printf("\nFalha na compra. Verifique o estoque e as informacoes fornecidas.\n");
+                    }
+
+                    imprimirBaseCompra(compras);
+
+                    if (d != NULL) imprimeDisco(d);
+
+                    if (d != NULL) free(d);
+                    if (c != NULL) free(c);
+                    if (f != NULL) free(f);
                 
                 break;
 
