@@ -38,7 +38,7 @@ O principal objetivo da aplicação é proporcionar uma gestão eficiente dos se
 4. **Compra**
    - `id`: Identificador único da compra.
    - `disco_id`: Identificador do disco comprado.
-   - `cpf_cliente`: CPF do cliente que realizou a compra.
+   - `id_cliente`: Id do cliente que realizou a compra.
    - `id_funcionario`: Identificador do funcionário que processou a compra.
    - `quantidade`: Quantidade comprada.
    - `valor_total`: Valor total da compra.
