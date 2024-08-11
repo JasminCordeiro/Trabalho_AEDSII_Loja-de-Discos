@@ -7,6 +7,7 @@
 
 // Cria um novo disco.
 Disco *criaDisco(int id, const char *titulo, const char *artista, const char *genero, int ano, float preco, int estoque) {
+
     Disco *disco = (Disco *) malloc(sizeof(Disco));
     // Inicializa espaço de memória com ZEROS
     if (disco) memset(disco, 0, sizeof(Disco));
@@ -52,13 +53,13 @@ Disco *leDisco(FILE *in) {
 // Imprime disco
 void imprimeDisco(Disco *disco) {
     printf("**********************************************\n");
-    printf("Disco ID: %d\n", disco->id);
-    printf("Titulo: %s\n", disco->titulo);
-    printf("Artista: %s\n", disco->artista);
-    printf("Genero: %s\n", disco->genero);
-    printf("Ano: %d\n", disco->ano);
-    printf("Preco: %.2f\n", disco->preco);
-    printf("Estoque: %d\n", disco->estoque);
+    printf(" Disco ID: %d\n", disco->id);
+    printf(" Titulo: %s\n", disco->titulo);
+    printf(" Artista: %s\n", disco->artista);
+    printf(" Genero: %s\n", disco->genero);
+    printf(" Ano: %d\n", disco->ano);
+    printf(" Preco: %.2f\n", disco->preco);
+    printf(" Estoque: %d\n", disco->estoque);
     printf("**********************************************\n");
 }
 
@@ -143,27 +144,40 @@ void imprimirBaseDisco(FILE *arq) {
     free(d);
 }
 
-Disco *buscaSequencialDisco(int chave, FILE *arq){
-
+Disco *buscaSequencialDisco(int chave, FILE *arq) {
     Disco *d;
-    int achou;
-    rewind(arq);
-    while ((d = leDisco(arq)) != NULL){
+    int achou = 0;
+    clock_t start_time, end_time;
+    double cpu_time_used;
 
-        if(d->id == chave){
-           //return d;
-           achou = 1;
-           break;
+    start_time = clock(); // Captura o tempo inicial
+
+    rewind(arq);
+    while ((d = leDisco(arq)) != NULL) {
+        if (d->id == chave) {
+            achou = 1;
+            break;
         }
     }
-        if(achou == 1)
-            return d;
-        else printf("Disco nao encontrado");
 
+    end_time = clock(); // Captura o tempo final
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+
+    if (achou == 1) {
+        printf("Disco encontrado em %f segundos.\n", cpu_time_used);
+        return d;
+    } else {
+        printf("Disco nao encontrado. Tempo de busca: %f segundos.\n", cpu_time_used);
         free(d);
+        return NULL;
+    }
 }
 
 Disco* buscaBinariaDisco(int id, FILE* arq, int inicio, int fim) {
+    clock_t start_time, end_time;
+    double cpu_time_used;
+    start_time = clock(); // Captura o tempo inicial
+
     while (inicio <= fim) {
         int meio = inicio + (fim - inicio) / 2;
         fseek(arq, meio * tamanhoRegistroDisco(), SEEK_SET);
@@ -171,15 +185,22 @@ Disco* buscaBinariaDisco(int id, FILE* arq, int inicio, int fim) {
         Disco *d = leDisco(arq);
 
         if (d->id == id) {
+            end_time = clock(); // Captura o tempo final
+            cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+            printf("Disco encontrado em %f segundos.\n", cpu_time_used);
             return d;
         }
-         if (d->id > id) {
+        if (d->id > id) {
             fim = meio - 1;
         } else {
             inicio = meio + 1;
         }
         free(d);
     }
+
+    end_time = clock(); // Captura o tempo final
+    cpu_time_used = ((double)(end_time - start_time)) / CLOCKS_PER_SEC; // Calcula o tempo de execução
+    printf("Disco nao encontrado. Tempo de busca: %f segundos.\n", cpu_time_used);
     return NULL;
 }
 

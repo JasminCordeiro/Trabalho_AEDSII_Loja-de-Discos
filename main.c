@@ -6,6 +6,11 @@
 #include "funcionario.h"
 
 int main(int argc, char** argv) {
+            const char *verde = "\x1b[32m"; 
+            const char *resetar = "\x1b[0m";   // Resetar cor
+            const char *azul = "\x1b[34m";  // azul
+
+
     FILE *compras;
     FILE *clientes;
     FILE *funcionarios;
@@ -39,10 +44,10 @@ int main(int argc, char** argv) {
     int quantidade =2;
 
     do { 
-        printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<<<<<<");
-        printf("\n\n\t>>>>>>>>>>>>>>>>>>>>>>> OPCOES DE MENU <<<<<<<<<<<<<<<<<<<<<<<<\n");
+        printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<%s", verde, resetar);
+        printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> OPCOES DE MENU <<<<<<<<<<<<<<<<<<<\n%s", verde, resetar);
 
-        printf("\n>>>>>>>>>>>>>>>>>>>>>>> DISCOS <<<<<<<<<<<<<<<<<<<<<<<<\n");
+        printf("\n%s>>>>>>>>>>>>>>>>>>>>>>> DISCOS <<<<<<<<<<<<<<<<<<<<<<<<%s\n", azul, resetar);
         printf("\n1. Criar Base Discos Desordenada");
         printf("\n2. Cadastrar Disco");
         printf("\n3. Buscar Discos (Sequencial)");
@@ -50,23 +55,22 @@ int main(int argc, char** argv) {
         printf("\n5. Atualizar Disco");
         printf("\n6. Ordenar Disco");
 
-        printf("\n\n>>>>>>>>>>>>>>>>>>>>>>> FUNCIONARIOS <<<<<<<<<<<<<<<<<<<<<<<<\n");
+        printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> FUNCIONARIOS <<<<<<<<<<<<<<<<<<<<<<<<%s\n", azul, resetar);
         printf("\n7. Criar Base Funcionarios Desordenada");
         printf("\n8. Cadastrar Funcionario");
         printf("\n9. Buscar Funcionarios (Sequencial)");
         printf("\n10. Buscar Funcionarios (Binaria)");
         printf("\n11. Ordenar Funcionario");
 
-        printf("\n\n>>>>>>>>>>>>>>>>>>>>>>> CLIENTES <<<<<<<<<<<<<<<<<<<<<<<<\n");
+        printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> CLIENTES <<<<<<<<<<<<<<<<<<<<<<<<%s\n", azul, resetar);
         printf("\n12. Criar Base Clientes Desordenada");
         printf("\n13. Cadastrar Cliente");
         printf("\n14. Buscar Cliente");
 
-        printf("\n\n>>>>>>>>>>>>>>>>>>>>>>> COMPRAS <<<<<<<<<<<<<<<<<<<<<<<<\n");
+        printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> COMPRAS <<<<<<<<<<<<<<<<<<<<<<<<%s\n", azul, resetar);
         printf("\n15. Cadastrar Compra");
         printf("\n16. Buscar Compras");
-        printf("\n17. Excluir Compra");
-        printf("\n18. Gerar Relatorio de Compras");
+        printf("\n17. Gerar Relatorio de Compras");
 
         printf("\n\n0. Sair");        
         printf("\nEscolha uma opcao: ");
@@ -250,14 +254,9 @@ int main(int argc, char** argv) {
                 break;
 
             case 17:
-                printf("\nExcluir Compra selecionado.\n");
-                break;
-
-            case 18:
                 printf("\nGerar Relatorio de Compras selecionado.\n");
-                 imprimirBaseFuncionario(funcionarios);
+                imprimirBaseCompra(compras);
                 break;
-
             default:
                 printf("\nOpcao invalida!\n");
                 break;
