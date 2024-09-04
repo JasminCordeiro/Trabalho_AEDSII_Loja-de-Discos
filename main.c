@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 1000;
-    int quantidadeTrocas = 333;
+    int quantidadeDeRegistros = 500;
+    int quantidadeTrocas = 80;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
             case 4:
                 printf("\nBuscar Discos (Binaria) selecionado.\n");
                 tamanho = qtdRegistrosDisco(discos);
-                d = buscaBinariaDisco(454,discos,0,tamanho - 1);
+                d = buscaBinariaDisco(1000,discos,0,tamanho - 1);
                 if(d != NULL)
                     (imprimeDisco(d));
                 free(d);  
@@ -276,6 +276,11 @@ int main(int argc, char** argv) {
             case 17:
                 printf("\nGerar Relatorio de Compras selecionado.\n");
                 imprimirBaseCompra(compras);
+                break;
+
+            case 18:
+                printf("\n Selecao com Substituicao Funcionarios.\n");
+                selecaoPorSubstituicao(funcionarios,10);
                 break;
             default:
                 printf("\nOpcao invalida!\n");

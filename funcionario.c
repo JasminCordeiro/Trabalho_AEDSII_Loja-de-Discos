@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <stdbool.h>
 
 // Cria funcionario.
 Funcionario *criaFuncionario(int id, const char *nome, const char *cpf) {
@@ -223,3 +224,85 @@ void bubbleSortFuncionarios(FILE *arq, int tam) {
         }
     }
 }
+
+bool existeNaoCongelado(bool congelado[], int tamanho) {
+    for (int i = 0; i < tamanho; i++) {
+        if (!congelado[i]) {  
+            return true;
+        }
+    }
+    return false;  
+}
+
+
+void selecaoPorSubstituicao(FILE * arq, int m) {
+    Funcionario *copiaFuncionarios[m];
+    bool congelado[m];
+    int idFuncionarioSalvo;
+    int indiceMenorChave;
+    int numeroParticao = 1;
+
+    rewind(arq);
+
+    for (int i = 0; i < m; i++) {
+        copiaFuncionarios[i] = leFuncionario(arq);
+        congelado[i] = false;    
+    }
+
+    while(true) {
+
+    char nomeParticao[50];
+    sprintf(nomeParticao, "particoes/part%d.dat", numeroParticao);
+
+    FILE *partFile = fopen(nomeParticao, "w+b");
+    if (partFile == NULL) {
+        printf("Erro ao abrir o arquivo");
+        return;
+    }
+   
+    while (existeNaoCongelado(congelado, m)) {
+          
+        indiceMenorChave = -1;
+        for (int i = 0; i < m; i++) {
+            if (!congelado[i] && copiaFuncionarios[i] != NULL && 
+                (indiceMenorChave == -1 || copiaFuncionarios[i]->id < copiaFuncionarios[indiceMenorChave]->id)) {
+                indiceMenorChave = i;
+            }
+        }
+        
+        idFuncionarioSalvo = copiaFuncionarios[indiceMenorChave]->id;
+        salvaFuncionario(copiaFuncionarios[indiceMenorChave], partFile);
+
+        copiaFuncionarios[indiceMenorChave] = leFuncionario(arq); // substituir para o proximo
+
+         if (idFuncionarioSalvo > copiaFuncionarios[indiceMenorChave]->id) {
+                congelado[indiceMenorChave] = true;
+            }
+            
+    }
+    printf("Particao  %d" ,numeroParticao);
+    imprimirBaseFuncionario(partFile);
+    fclose(partFile);
+    for (int i = 0; i < m; i++) {
+        congelado[i] = false; 
+    }
+    numeroParticao++;
+
+     bool terminou = true;
+        for (int i = 0; i < m; i++) {
+            if (copiaFuncionarios[i] != NULL) {
+                terminou = false;
+                break;
+            }
+        }
+        if (terminou) {
+            break;
+        }
+    
+    }
+}
+
+
+
+
+

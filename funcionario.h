@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
     int id;             
@@ -44,4 +45,10 @@ Funcionario *buscaSequencialFuncionario(int id, FILE *arq);
 Funcionario *buscaBinariaFuncionario(int id, FILE *arq, int inicio, int fim);
 
 void bubbleSortFuncionarios(FILE *arq, int tam);
+
+void selecaoPorSubstituicao(FILE * arq, int m); 
+
+bool existeNaoCongelado(bool congelado[], int tamanho);
+
+void selecaoPorSubstituicao(FILE * arq, int m);
 #endif
