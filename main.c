@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 500;
-    int quantidadeTrocas = 80;
+    int quantidadeDeRegistros = 100;
+    int quantidadeTrocas = 26;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -280,8 +280,12 @@ int main(int argc, char** argv) {
 
             case 18:
                 printf("\n Selecao com Substituicao Funcionarios.\n");
-                selecaoPorSubstituicao(funcionarios,10);
+                selecaoPorSubstituicao(funcionarios,4);
                 break;
+            // case 19:
+            //     printf("\n IMprime Selecao com Substituicao Funcionarios.\n");
+            //     imprimirBaseFuncionario(funcionarios,2);
+            //     break;
             default:
                 printf("\nOpcao invalida!\n");
                 break;

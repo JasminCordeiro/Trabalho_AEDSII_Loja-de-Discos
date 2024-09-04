@@ -235,7 +235,7 @@ bool existeNaoCongelado(bool congelado[], int tamanho) {
 }
 
 
-void selecaoPorSubstituicao(FILE * arq, int m) {
+void selecaoPorSubstituicao(FILE *arq, int m) {
     Funcionario *copiaFuncionarios[m];
     bool congelado[m];
     int idFuncionarioSalvo;
@@ -244,63 +244,87 @@ void selecaoPorSubstituicao(FILE * arq, int m) {
 
     rewind(arq);
 
+    // 1) Ler M registros do arquivo para a memória
     for (int i = 0; i < m; i++) {
         copiaFuncionarios[i] = leFuncionario(arq);
         congelado[i] = false;    
     }
 
-    while(true) {
+    while (true) {
+        // 7) Criar nova partição 
+        char nomeParticao[50];
+        sprintf(nomeParticao, "particoes/part%d.dat", numeroParticao);
+        
 
-    char nomeParticao[50];
-    sprintf(nomeParticao, "particoes/part%d.dat", numeroParticao);
+        FILE *partFile = fopen(nomeParticao, "w+b");
+        rewind(partFile);
+        if (partFile == NULL) {
+            printf("Erro ao abrir o arquivo");
+            return;
+        }
+         printf("Criou o arquivo  %d", numeroParticao);
 
-    FILE *partFile = fopen(nomeParticao, "w+b");
-    if (partFile == NULL) {
-        printf("Erro ao abrir o arquivo");
-        return;
-    }
-   
-    while (existeNaoCongelado(congelado, m)) {
-          
-        indiceMenorChave = -1;
-        for (int i = 0; i < m; i++) {
-            if (!congelado[i] && copiaFuncionarios[i] != NULL && 
-                (indiceMenorChave == -1 || copiaFuncionarios[i]->id < copiaFuncionarios[indiceMenorChave]->id)) {
-                indiceMenorChave = i;
+        while (existeNaoCongelado(congelado, m)) {
+        
+
+            indiceMenorChave = -1; // 2) Selecionar registro de menor chave
+            for (int i = 0; i < m; i++) {
+                if (!congelado[i] && copiaFuncionarios[i] != NULL &&
+                    (indiceMenorChave == -1 || copiaFuncionarios[i]->id < copiaFuncionarios[indiceMenorChave]->id)) {
+                    indiceMenorChave = i;
+                }
+            }
+
+            if (indiceMenorChave != -1) {
+                // 3) Gravar o registro r na partição de saída
+                idFuncionarioSalvo = copiaFuncionarios[indiceMenorChave]->id;
+                salvaFuncionario(copiaFuncionarios[indiceMenorChave], partFile);
+
+                // 4) Substituir o registro r pelo próximo do arquivo de entrada
+                copiaFuncionarios[indiceMenorChave] = leFuncionario(arq);
+
+                // 5) Congelar se o novo registro tiver uma chave menor que a salva
+                if (copiaFuncionarios[indiceMenorChave] == NULL || idFuncionarioSalvo > copiaFuncionarios[indiceMenorChave]->id) {
+                    congelado[indiceMenorChave] = true;
+                }
             }
         }
-        
-        idFuncionarioSalvo = copiaFuncionarios[indiceMenorChave]->id;
-        salvaFuncionario(copiaFuncionarios[indiceMenorChave], partFile);
 
-        copiaFuncionarios[indiceMenorChave] = leFuncionario(arq); // substituir para o proximo
+        // 7.1) Fechar a partição de saída
+        rewind(partFile);
+        printf("\nParticao %d\n", numeroParticao);
+        imprimirBaseFuncionario(partFile);
+        fclose(partFile);
 
-         if (idFuncionarioSalvo > copiaFuncionarios[indiceMenorChave]->id) {
-                congelado[indiceMenorChave] = true;
-            }
-            
-    }
-    printf("Particao  %d" ,numeroParticao);
-    imprimirBaseFuncionario(partFile);
-    fclose(partFile);
-    for (int i = 0; i < m; i++) {
-        congelado[i] = false; 
-    }
-    numeroParticao++;
 
-     bool terminou = true;
+
+        // 7.2) Descongelar os registros congelados
+        for (int i = 0; i < m; i++) {
+            if(copiaFuncionarios[i] != NULL) {
+            printf("descongelados: %d\n" ,copiaFuncionarios[i]->id); }
+            congelado[i] = false;
+        }
+
+        // 7.3) Preparar para a próxima partição
+        numeroParticao++;
+
+        // Verificar se ainda há registros no array para continuar o processo
+        bool registrosRestantes = false;
         for (int i = 0; i < m; i++) {
             if (copiaFuncionarios[i] != NULL) {
-                terminou = false;
+                registrosRestantes = true;
                 break;
             }
         }
-        if (terminou) {
+        if (!registrosRestantes) {
+            printf("encerrou");
             break;
         }
+     }
+
     
-    }
 }
+
 
 
 

@@ -1,13 +1,5 @@
 /output
-clientes.dat
-compras.dat
-discos.dat
-funcionarios.dat
-main.exe
-a.exe
-programa.exe
-cliente.h.gch
-compra.h.gch
-funcionario.h.gch
-disco.h.gch
+*.dat
+*.exe
+*.gch
 particoes/*.dat
