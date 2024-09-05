@@ -225,15 +225,14 @@ void bubbleSortFuncionarios(FILE *arq, int tam) {
     }
 }
 
-bool existeNaoCongelado(bool congelado[], int tamanho) {
+bool existeNaoCongelado(Funcionario *funcionarios[], bool congelado[], int tamanho) {
     for (int i = 0; i < tamanho; i++) {
-        if (!congelado[i]) {  
-            return true;
+        if (!congelado[i] && funcionarios[i] != NULL) {  
+            return true;  // Há um registro não congelado e válido
         }
     }
-    return false;  
+    return false;  // Todos estão congelados ou nulos
 }
-
 
 void selecaoPorSubstituicao(FILE *arq, int m) {
     Funcionario *copiaFuncionarios[m];
@@ -241,6 +240,7 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
     int idFuncionarioSalvo;
     int indiceMenorChave;
     int numeroParticao = 1;
+    bool verifica = true;
 
     rewind(arq);
 
@@ -262,11 +262,9 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
             printf("Erro ao abrir o arquivo");
             return;
         }
-         printf("Criou o arquivo  %d", numeroParticao);
 
-        while (existeNaoCongelado(congelado, m)) {
-        
-
+        while (existeNaoCongelado(copiaFuncionarios,congelado, m)) {
+       
             indiceMenorChave = -1; // 2) Selecionar registro de menor chave
             for (int i = 0; i < m; i++) {
                 if (!congelado[i] && copiaFuncionarios[i] != NULL &&
@@ -291,21 +289,15 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
         }
 
         // 7.1) Fechar a partição de saída
-        rewind(partFile);
         printf("\nParticao %d\n", numeroParticao);
         imprimirBaseFuncionario(partFile);
         fclose(partFile);
-
-
-
+       
         // 7.2) Descongelar os registros congelados
         for (int i = 0; i < m; i++) {
-            if(copiaFuncionarios[i] != NULL) {
-            printf("descongelados: %d\n" ,copiaFuncionarios[i]->id); }
             congelado[i] = false;
         }
 
-        // 7.3) Preparar para a próxima partição
         numeroParticao++;
 
         // Verificar se ainda há registros no array para continuar o processo
@@ -321,8 +313,6 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
             break;
         }
      }
-
-    
 }
 
 

@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     FILE *funcionarios;
     FILE *discos;
     int quantidadeDeRegistros = 100;
-    int quantidadeTrocas = 26;
+    int quantidadeTrocas = 25;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
