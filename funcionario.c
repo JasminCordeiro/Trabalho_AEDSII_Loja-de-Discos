@@ -225,9 +225,9 @@ void bubbleSortFuncionarios(FILE *arq, int tam) {
     }
 }
 
-bool existeNaoCongelado(Funcionario *funcionarios[], bool congelado[], int tamanho) {
+bool existeNaoCongelado(bool congelado[], int tamanho) {
     for (int i = 0; i < tamanho; i++) {
-        if (!congelado[i] && funcionarios[i] != NULL) {  
+        if (!congelado[i]) {  
             return true;  // Há um registro não congelado e válido
         }
     }
@@ -255,7 +255,6 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
         char nomeParticao[50];
         sprintf(nomeParticao, "particoes/part%d.dat", numeroParticao);
         
-
         FILE *partFile = fopen(nomeParticao, "w+b");
         rewind(partFile);
         if (partFile == NULL) {
@@ -263,7 +262,7 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
             return;
         }
 
-        while (existeNaoCongelado(copiaFuncionarios,congelado, m)) {
+        while (existeNaoCongelado(congelado, m)) {
        
             indiceMenorChave = -1; // 2) Selecionar registro de menor chave
             for (int i = 0; i < m; i++) {
@@ -295,7 +294,9 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
        
         // 7.2) Descongelar os registros congelados
         for (int i = 0; i < m; i++) {
+            if(copiaFuncionarios[i] != NULL) {
             congelado[i] = false;
+            }
         }
 
         numeroParticao++;

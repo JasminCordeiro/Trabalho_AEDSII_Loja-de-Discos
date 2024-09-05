@@ -48,7 +48,7 @@ void bubbleSortFuncionarios(FILE *arq, int tam);
 
 void selecaoPorSubstituicao(FILE * arq, int m); 
 
-bool existeNaoCongelado(Funcionario *funcionarios[], bool congelado[], int tamanho);
+bool existeNaoCongelado(bool congelado[], int tamanho);
 
 void selecaoPorSubstituicao(FILE * arq, int m);
 #endif
