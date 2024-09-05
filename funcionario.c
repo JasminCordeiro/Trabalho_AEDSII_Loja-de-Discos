@@ -234,12 +234,12 @@ bool existeNaoCongelado(bool congelado[], int tamanho) {
     return false;  // Todos estão congelados ou nulos
 }
 
-void selecaoPorSubstituicao(FILE *arq, int m) {
+int selecaoPorSubstituicao(FILE *arq, int m) {
     Funcionario *copiaFuncionarios[m];
     bool congelado[m];
     int idFuncionarioSalvo;
     int indiceMenorChave;
-    int numeroParticao = 1;
+    int numeroParticao = 0;
     bool verifica = true;
 
     rewind(arq);
@@ -259,7 +259,7 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
         rewind(partFile);
         if (partFile == NULL) {
             printf("Erro ao abrir o arquivo");
-            return;
+            return -1;
         }
 
         while (existeNaoCongelado(congelado, m)) {
@@ -314,7 +314,61 @@ void selecaoPorSubstituicao(FILE *arq, int m) {
             break;
         }
      }
+
+     return numeroParticao - 1;
 }
+
+void arvoreBinariaDeVencedores(int numeroParticao) {
+    printf("Numero retornando: %d\n", numeroParticao);
+
+    FILE *partFiles[5];
+    Funcionario *copiaFuncionarios[5];
+    Funcionario *vencedores[5]; // Array para armazenar os vencedores
+    printf("=============================================\n");
+
+    // Abrir arquivos e ler os funcionários
+    for (int i = 0; i < 5; i++) {
+        char nomeParticao[50];
+        sprintf(nomeParticao, "particoes/part%d.dat", i);
+        
+        partFiles[i] = fopen(nomeParticao, "r");
+        if (partFiles[i] == NULL) {
+            printf("Erro ao abrir o arquivo\n");
+            return;
+        }
+        copiaFuncionarios[i] = leFuncionario(partFiles[i]);
+        printf("ID: %d\n" , copiaFuncionarios[i]->id);
+        fclose(partFiles[i]);
+    }
+
+    // Primeira rodada de comparações: pares de funcionários
+    for (int i = 0; i < 5; i += 2) {
+        if (i + 1 < 5) {  // Evitar acessar fora dos limites do array
+            if (copiaFuncionarios[i]->id < copiaFuncionarios[i + 1]->id) {
+                vencedores[i / 2] = copiaFuncionarios[i];
+            } else {
+                vencedores[i / 2] = copiaFuncionarios[i + 1];
+            }
+        } else {
+            vencedores[i / 2] = copiaFuncionarios[i]; // Caso ímpar, o último avança automaticamente
+        }
+    }
+
+    // Segunda rodada: comparar os vencedores
+    Funcionario *finalista;
+    if (vencedores[0]->id < vencedores[1]->id) {
+        finalista = vencedores[0];
+    } else {
+        finalista = vencedores[1];
+    }
+
+    // Imprimir o vencedor final
+    printf("Vencedor final com ID: %d\n", finalista->id);
+}
+
+    
+
+
 
 
 

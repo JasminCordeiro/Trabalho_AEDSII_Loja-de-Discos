@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 100;
-    int quantidadeTrocas = 25;
+    int quantidadeDeRegistros = 24;
+    int quantidadeTrocas = 8;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -41,6 +41,7 @@ int main(int argc, char** argv) {
     Compra *p;
     int tamanho;
     int id_cadastro;
+    int numeroParticao;
 
     do { 
         printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<%s", verde, resetar);
@@ -279,13 +280,16 @@ int main(int argc, char** argv) {
                 break;
 
             case 18:
+            
                 printf("\n Selecao com Substituicao Funcionarios.\n");
-                selecaoPorSubstituicao(funcionarios,4);
+                numeroParticao = selecaoPorSubstituicao(funcionarios,2);
                 break;
-            // case 19:
-            //     printf("\n IMprime Selecao com Substituicao Funcionarios.\n");
-            //     imprimirBaseFuncionario(funcionarios,2);
-            //     break;
+
+            case 19:
+                printf("\n Arvore.\n");
+                arvoreBinariaDeVencedores(numeroParticao);
+                break;
+
             default:
                 printf("\nOpcao invalida!\n");
                 break;

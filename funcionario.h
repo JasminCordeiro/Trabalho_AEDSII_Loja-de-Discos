@@ -46,9 +46,9 @@ Funcionario *buscaBinariaFuncionario(int id, FILE *arq, int inicio, int fim);
 
 void bubbleSortFuncionarios(FILE *arq, int tam);
 
-void selecaoPorSubstituicao(FILE * arq, int m); 
-
 bool existeNaoCongelado(bool congelado[], int tamanho);
 
-void selecaoPorSubstituicao(FILE * arq, int m);
+int selecaoPorSubstituicao(FILE * arq, int m);
+
+void arvoreBinariaDeVencedores(int numeroParticao);
 #endif
