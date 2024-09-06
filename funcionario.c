@@ -387,7 +387,7 @@ void intercalaParticoes(int qtdParticoes) {
 }
 
 void unirParticoesOrdenadas(int numParticoes) {
-    char nomeDaParticao[50] = "particoes/part"; 
+    char nomeDaParticao[50] = "intercalacaoPart/partIntercalada"; 
     FILE *saidaFinal = fopen("intercalacaoPart/saida_final_ordenada.dat", "w+b");
     if (saidaFinal == NULL) {
         printf("Erro ao criar o arquivo de saída final ordenada.\n");
@@ -400,10 +400,10 @@ void unirParticoesOrdenadas(int numParticoes) {
     // Abrir todas as partições
     for (int i = 0; i < numParticoes; i++) {
         char nomeArqParticao[50];
-        sprintf(nomeArqParticao, "%s%d.dat", nomeDaParticao, i);
+        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i);
         particoes[i] = fopen(nomeArqParticao, "rb");
         if (particoes[i] == NULL) {
-            printf("Erro ao abrir o arquivo da partição %s\n", nomeArqParticao);
+            printf("Erro ao abrir o arquivo da particao %s\n", nomeArqParticao);
             exit(1);
         }
 
@@ -436,12 +436,12 @@ void unirParticoesOrdenadas(int numParticoes) {
     }
 
     // Fechar e remover as partições
-    for (int i = 0; i < numParticoes; i++) {
-        fclose(particoes[i]);
-        char nomeArqParticao[50];
-        sprintf(nomeArqParticao, "%s%d.dat", nomeDaParticao, i);
-        remove(nomeArqParticao);  // Remove as partições temporárias
-    }
+    // for (int i = 0; i < numParticoes; i++) {
+    //     fclose(particoes[i]);
+    //     char nomeArqParticao[50];
+    //     sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i);
+    //     remove(nomeArqParticao);  // Remove as partições temporárias
+    // }
 
     fclose(saidaFinal);
 

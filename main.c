@@ -288,7 +288,7 @@ int main(int argc, char** argv) {
             case 19:
                 printf("\n Arvore.\n");
                 intercalaParticoes(numeroParticao);
-                unirParticoesOrdenadas(numeroParticao);
+                unirParticoesOrdenadas(4);
                 break;
 
             default:
