@@ -318,53 +318,148 @@ int selecaoPorSubstituicao(FILE *arq, int m) {
      return numeroParticao - 1;
 }
 
-void arvoreBinariaDeVencedores(int numeroParticao) {
-    printf("Numero retornando: %d\n", numeroParticao);
 
-    FILE *partFiles[5];
-    Funcionario *copiaFuncionarios[5];
-    Funcionario *vencedores[5]; // Array para armazenar os vencedores
-    printf("=============================================\n");
+void intercalaParticoes(int qtdParticoes) {
+    int grupoSize = 4;  // Definindo o tamanho do grupo de 4 partições
+    int numGrupos = (qtdParticoes + grupoSize - 1) / grupoSize;  // Calculando o número de grupos
 
-    // Abrir arquivos e ler os funcionários
-    for (int i = 0; i < 5; i++) {
-        char nomeParticao[50];
-        sprintf(nomeParticao, "particoes/part%d.dat", i);
-        
-        partFiles[i] = fopen(nomeParticao, "r");
-        if (partFiles[i] == NULL) {
-            printf("Erro ao abrir o arquivo\n");
-            return;
+    char nomeArqParticao[50];
+    FILE *particoes[qtdParticoes];
+    Funcionario *copiaFuncionarios[qtdParticoes];
+
+    // Abrindo cada partição para leitura
+    for (int i = 0; i < qtdParticoes; i++) {
+        sprintf(nomeArqParticao, "particoes/part%d.dat", i);
+        particoes[i] = fopen(nomeArqParticao, "rb");
+        if (particoes[i] == NULL) {
+            printf("Erro ao abrir o arquivo da partição %d\n", i);
+            exit(EXIT_FAILURE);
         }
-        copiaFuncionarios[i] = leFuncionario(partFiles[i]);
-        printf("ID: %d\n" , copiaFuncionarios[i]->id);
-        fclose(partFiles[i]);
+        copiaFuncionarios[i] = leFuncionario(particoes[i]);  // Lê o primeiro funcionário de cada partição
     }
 
-    // Primeira rodada de comparações: pares de funcionários
-    for (int i = 0; i < 5; i += 2) {
-        if (i + 1 < 5) {  // Evitar acessar fora dos limites do array
-            if (copiaFuncionarios[i]->id < copiaFuncionarios[i + 1]->id) {
-                vencedores[i / 2] = copiaFuncionarios[i];
-            } else {
-                vencedores[i / 2] = copiaFuncionarios[i + 1];
+    // Intercalação por grupos de 4 partições
+    for (int grupo = 0; grupo < numGrupos; grupo++) {
+        Funcionario *grupoRegistros[grupoSize * qtdParticoes];  // Armazena registros do grupo
+        int idx = 0;
+
+        // Processa o grupo de 4 partições
+        for (int i = grupo * grupoSize; i < (grupo + 1) * grupoSize && i < qtdParticoes; i++) {
+            while (copiaFuncionarios[i] != NULL) {
+                grupoRegistros[idx++] = copiaFuncionarios[i];
+                copiaFuncionarios[i] = leFuncionario(particoes[i]);
             }
-        } else {
-            vencedores[i / 2] = copiaFuncionarios[i]; // Caso ímpar, o último avança automaticamente
         }
+
+        // Ordenação dos registros dentro do grupo
+        for (int i = 0; i < idx - 1; i++) {
+            for (int j = i + 1; j < idx; j++) {
+                if (grupoRegistros[i]->id > grupoRegistros[j]->id) {
+                    Funcionario *temp = grupoRegistros[i];
+                    grupoRegistros[i] = grupoRegistros[j];
+                    grupoRegistros[j] = temp;
+                }
+            }
+        }
+
+        // Gerar uma nova partição com os registros intercalados do grupo
+        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", grupo);
+        FILE *saida = fopen(nomeArqParticao, "w+b");
+        if (saida == NULL) {
+            printf("Erro ao criar o arquivo de saída\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // Salva o grupo de registros intercalados na nova partição
+        for (int i = 0; i < idx; i++) {
+            salvaFuncionario(grupoRegistros[i], saida);
+        }
+
+        fclose(saida);
     }
 
-    // Segunda rodada: comparar os vencedores
-    Funcionario *finalista;
-    if (vencedores[0]->id < vencedores[1]->id) {
-        finalista = vencedores[0];
-    } else {
-        finalista = vencedores[1];
+    // Fechando os arquivos das partições originais
+    for (int i = 0; i < qtdParticoes; i++) {
+        fclose(particoes[i]);
     }
 
-    // Imprimir o vencedor final
-    printf("Vencedor final com ID: %d\n", finalista->id);
+    printf("Intercalação de partições em grupos de 4 concluída.\n");
 }
+
+void unirParticoesOrdenadas(int numParticoes) {
+    char nomeDaParticao[50] = "particoes/part"; 
+    FILE *saidaFinal = fopen("intercalacaoPart/saida_final_ordenada.dat", "w+b");
+    if (saidaFinal == NULL) {
+        printf("Erro ao criar o arquivo de saída final ordenada.\n");
+        exit(1);
+    }
+
+    Funcionario *copiaFuncionarios[numParticoes];
+    FILE *particoes[numParticoes];
+
+    // Abrir todas as partições
+    for (int i = 0; i < numParticoes; i++) {
+        char nomeArqParticao[50];
+        sprintf(nomeArqParticao, "%s%d.dat", nomeDaParticao, i);
+        particoes[i] = fopen(nomeArqParticao, "rb");
+        if (particoes[i] == NULL) {
+            printf("Erro ao abrir o arquivo da partição %s\n", nomeArqParticao);
+            exit(1);
+        }
+
+        copiaFuncionarios[i] = leFuncionario(particoes[i]);  // Lê o primeiro funcionário de cada partição
+    }
+
+    // Processo de merge para unir as partições intercaladas
+    while (1) {
+        int menorId = 999999999;
+        int idxMenor = -1;
+
+        // Encontrar o menor funcionário entre as partições
+        for (int i = 0; i < numParticoes; i++) {
+            if (copiaFuncionarios[i] != NULL && copiaFuncionarios[i]->id < menorId) {
+                menorId = copiaFuncionarios[i]->id;
+                idxMenor = i;
+            }
+        }
+
+        if (idxMenor == -1) {
+            // Todos os registros foram unidos
+            break;
+        }
+
+        // Salvar o menor funcionário no arquivo final
+        salvaFuncionario(copiaFuncionarios[idxMenor], saidaFinal);
+
+        // Ler o próximo funcionário da partição correspondente
+        copiaFuncionarios[idxMenor] = leFuncionario(particoes[idxMenor]);
+    }
+
+    // Fechar e remover as partições
+    for (int i = 0; i < numParticoes; i++) {
+        fclose(particoes[i]);
+        char nomeArqParticao[50];
+        sprintf(nomeArqParticao, "%s%d.dat", nomeDaParticao, i);
+        remove(nomeArqParticao);  // Remove as partições temporárias
+    }
+
+    fclose(saidaFinal);
+
+    // Abrir o arquivo final ordenado para impressão
+    FILE *saidaFinalOrdenada = fopen("intercalacaoPart/saida_final_ordenada.dat", "rb");
+    if (saidaFinalOrdenada == NULL) {
+        printf("Erro ao abrir o arquivo de saída final ordenada para impressão.\n");
+        exit(1);
+    }
+
+    // Imprimir o conteúdo do arquivo final ordenado
+    printf("SAIDA ORDENADA\n");
+    imprimirBaseFuncionario(saidaFinalOrdenada);
+
+    fclose(saidaFinalOrdenada);
+}
+
+
 
     
 

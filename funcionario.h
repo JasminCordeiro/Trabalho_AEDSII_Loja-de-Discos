@@ -50,5 +50,6 @@ bool existeNaoCongelado(bool congelado[], int tamanho);
 
 int selecaoPorSubstituicao(FILE * arq, int m);
 
-void arvoreBinariaDeVencedores(int numeroParticao);
+void intercalaParticoes(int qtdParticoes);
+void unirParticoesOrdenadas(int numParticoes);
 #endif

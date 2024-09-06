@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 24;
-    int quantidadeTrocas = 8;
+    int quantidadeDeRegistros = 100;
+    int quantidadeTrocas = 25;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -287,7 +287,8 @@ int main(int argc, char** argv) {
 
             case 19:
                 printf("\n Arvore.\n");
-                arvoreBinariaDeVencedores(numeroParticao);
+                intercalaParticoes(numeroParticao);
+                unirParticoesOrdenadas(numeroParticao);
                 break;
 
             default:
