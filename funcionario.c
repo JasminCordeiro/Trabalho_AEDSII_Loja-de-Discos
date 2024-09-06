@@ -315,11 +315,12 @@ int selecaoPorSubstituicao(FILE *arq, int m) {
         }
      }
 
-     return numeroParticao - 1;
+     return numeroParticao;
 }
 
 
-void intercalaParticoes(int qtdParticoes) {
+int intercalaParticoes(int qtdParticoes) {
+    int contaPartIntercalado = 0;
     int grupoSize = 4;  // Definindo o tamanho do grupo de 4 partições
     int numGrupos = (qtdParticoes + grupoSize - 1) / grupoSize;  // Calculando o número de grupos
 
@@ -363,6 +364,7 @@ void intercalaParticoes(int qtdParticoes) {
         }
 
         // Gerar uma nova partição com os registros intercalados do grupo
+        contaPartIntercalado++;
         sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", grupo);
         FILE *saida = fopen(nomeArqParticao, "w+b");
         if (saida == NULL) {
@@ -383,7 +385,7 @@ void intercalaParticoes(int qtdParticoes) {
         fclose(particoes[i]);
     }
 
-    printf("Intercalação de partições em grupos de 4 concluída.\n");
+    return contaPartIntercalado;
 }
 
 void unirParticoesOrdenadas(int numParticoes) {
@@ -436,12 +438,12 @@ void unirParticoesOrdenadas(int numParticoes) {
     }
 
     // Fechar e remover as partições
-    // for (int i = 0; i < numParticoes; i++) {
-    //     fclose(particoes[i]);
-    //     char nomeArqParticao[50];
-    //     sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i);
-    //     remove(nomeArqParticao);  // Remove as partições temporárias
-    // }
+    for (int i = 0; i < numParticoes; i++) {
+        fclose(particoes[i]);
+        char nomeArqParticao[50];
+        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i);
+        remove(nomeArqParticao);  // Remove as partições temporárias
+    }
 
     fclose(saidaFinal);
 

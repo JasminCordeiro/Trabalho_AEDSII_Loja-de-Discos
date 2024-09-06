@@ -42,6 +42,7 @@ int main(int argc, char** argv) {
     int tamanho;
     int id_cadastro;
     int numeroParticao;
+    int numeroParticaoIntercalado;
 
     do { 
         printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<%s", verde, resetar);
@@ -286,9 +287,9 @@ int main(int argc, char** argv) {
                 break;
 
             case 19:
-                printf("\n Arvore.\n");
-                intercalaParticoes(numeroParticao);
-                unirParticoesOrdenadas(4);
+                printf("\n Intercalacao Otima.\n");
+                numeroParticaoIntercalado = intercalaParticoes(numeroParticao);
+                unirParticoesOrdenadas(numeroParticaoIntercalado);
                 break;
 
             default:

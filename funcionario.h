@@ -50,7 +50,7 @@ bool existeNaoCongelado(bool congelado[], int tamanho);
 
 int selecaoPorSubstituicao(FILE * arq, int m);
 
-void intercalaParticoes(int qtdParticoes);
+int intercalaParticoes(int qtdParticoes);
 
 void unirParticoesOrdenadas(int numParticoes);
 #endif
