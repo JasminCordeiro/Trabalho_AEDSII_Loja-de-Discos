@@ -283,12 +283,13 @@ int main(int argc, char** argv) {
             case 18:
             
                 printf("\n Selecao com Substituicao Funcionarios.\n");
-                numeroParticao = selecaoPorSubstituicao(funcionarios,2);
+                numeroParticao = selecaoPorSubstituicao(funcionarios,10);
                 break;
 
             case 19:
                 printf("\n Intercalacao Otima.\n");
                 numeroParticaoIntercalado = intercalaParticoes(numeroParticao);
+                printf("chegou aqqqq");
                 unirParticoesOrdenadas(numeroParticaoIntercalado);
                 break;
 

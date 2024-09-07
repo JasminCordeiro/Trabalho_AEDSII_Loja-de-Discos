@@ -5,6 +5,7 @@
 #include <time.h>
 #include <math.h>
 #include <stdbool.h>
+#include <limits.h>
 
 // Cria funcionario.
 Funcionario *criaFuncionario(int id, const char *nome, const char *cpf) {
@@ -319,9 +320,9 @@ int selecaoPorSubstituicao(FILE *arq, int m) {
 }
 
 
-int intercalaParticoes(int qtdParticoes) {
+int intercalaParticoes(int qtdParticoes) { 
     int contaPartIntercalado = 0;
-    int grupoSize = 4;  // Definindo o tamanho do grupo de 4 partições
+    int grupoSize = 4;  // Definindo o tamanho do grupo de 4 partições // Testar com mais tamanhos
     int numGrupos = (qtdParticoes + grupoSize - 1) / grupoSize;  // Calculando o número de grupos
 
     char nomeArqParticao[50];
@@ -339,12 +340,13 @@ int intercalaParticoes(int qtdParticoes) {
         copiaFuncionarios[i] = leFuncionario(particoes[i]);  // Lê o primeiro funcionário de cada partição
     }
 
-    // Intercalação por grupos de 4 partições
+    // Intercalação por grupos de no máximo 4 partições
     for (int grupo = 0; grupo < numGrupos; grupo++) {
-        Funcionario *grupoRegistros[grupoSize * qtdParticoes];  // Armazena registros do grupo
+        int tamGrupoAtual = (grupo + 1) * grupoSize > qtdParticoes ? qtdParticoes - grupo * grupoSize : grupoSize;
+        Funcionario *grupoRegistros[tamGrupoAtual * 100];  // Armazena registros do grupo (100 como exemplo, depende do número de registros por partição)
         int idx = 0;
 
-        // Processa o grupo de 4 partições
+        // Processa o grupo de partições
         for (int i = grupo * grupoSize; i < (grupo + 1) * grupoSize && i < qtdParticoes; i++) {
             while (copiaFuncionarios[i] != NULL) {
                 grupoRegistros[idx++] = copiaFuncionarios[i];
@@ -365,7 +367,7 @@ int intercalaParticoes(int qtdParticoes) {
 
         // Gerar uma nova partição com os registros intercalados do grupo
         contaPartIntercalado++;
-        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", grupo);
+        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", contaPartIntercalado);
         FILE *saida = fopen(nomeArqParticao, "w+b");
         if (saida == NULL) {
             printf("Erro ao criar o arquivo de saída\n");
@@ -402,10 +404,10 @@ void unirParticoesOrdenadas(int numParticoes) {
     // Abrir todas as partições
     for (int i = 0; i < numParticoes; i++) {
         char nomeArqParticao[50];
-        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i);
+        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i + 1);  // Ajuste: começa em 1 para nome do arquivo
         particoes[i] = fopen(nomeArqParticao, "rb");
         if (particoes[i] == NULL) {
-            printf("Erro ao abrir o arquivo da particao %s\n", nomeArqParticao);
+            printf("Erro ao abrir o arquivo da partição %s\n", nomeArqParticao);
             exit(1);
         }
 
@@ -414,7 +416,7 @@ void unirParticoesOrdenadas(int numParticoes) {
 
     // Processo de merge para unir as partições intercaladas
     while (1) {
-        int menorId = 999999999;
+        int menorId = INT_MAX;
         int idxMenor = -1;
 
         // Encontrar o menor funcionário entre as partições
@@ -441,7 +443,7 @@ void unirParticoesOrdenadas(int numParticoes) {
     for (int i = 0; i < numParticoes; i++) {
         fclose(particoes[i]);
         char nomeArqParticao[50];
-        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i);
+        sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i + 1);  // Ajuste para remover corretamente os arquivos
         remove(nomeArqParticao);  // Remove as partições temporárias
     }
 
@@ -460,8 +462,6 @@ void unirParticoesOrdenadas(int numParticoes) {
 
     fclose(saidaFinalOrdenada);
 }
-
-
 
     
 
