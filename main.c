@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 100;
-    int quantidadeTrocas = 25;
+    int quantidadeDeRegistros = 1000;
+    int quantidadeTrocas = 250;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -283,13 +283,12 @@ int main(int argc, char** argv) {
             case 18:
             
                 printf("\n Selecao com Substituicao Funcionarios.\n");
-                numeroParticao = selecaoPorSubstituicao(funcionarios,10);
+                numeroParticao = selecaoPorSubstituicao(funcionarios,2);
                 break;
 
             case 19:
                 printf("\n Intercalacao Otima.\n");
                 numeroParticaoIntercalado = intercalaParticoes(numeroParticao);
-                printf("chegou aqqqq");
                 unirParticoesOrdenadas(numeroParticaoIntercalado);
                 break;
 
