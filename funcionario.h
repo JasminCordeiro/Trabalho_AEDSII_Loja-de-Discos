@@ -9,6 +9,7 @@ typedef struct {
     int id;             
     char nome[50];     
     char cpf[15];       
+    struct Funcionario *prox; // Ponteiro para o próximo Funcionário
 } Funcionario;
 
 // Cria funcionario.
@@ -53,4 +54,20 @@ int selecaoPorSubstituicao(FILE * arq, int m);
 int intercalaParticoes(int qtdParticoes);
 
 void unirParticoesOrdenadas(int numParticoes);
+
+Funcionario *leFuncionarioNaPosicao(FILE *arq, long posicao);
+
+int hash(int id, int tam);
+
+void inicalizaHash(int m);
+
+Funcionario *buscaHash(int id,int tam, FILE *arqFunc);
+
+void insereHash(int m, FILE *arq);
+
+void imprimeTabelaHash(int m) ;
+
+
+
+
 #endif

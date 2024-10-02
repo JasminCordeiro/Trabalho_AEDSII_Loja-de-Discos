@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 1000;
-    int quantidadeTrocas = 250;
+    int quantidadeDeRegistros = 10;
+    int quantidadeTrocas = 3;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -145,6 +145,7 @@ int main(int argc, char** argv) {
                 printf("\nCriando base de funcionario desordenada...\n");
                 criarBaseDesordenadaFuncionario(funcionarios, quantidadeDeRegistros, quantidadeTrocas);
                 imprimirBaseFuncionario(funcionarios);
+                printf("Teste quantidae de registro: %d", qtdRegistrosFuncionario(funcionarios));
                 break;
 
             case 8:
@@ -248,6 +249,7 @@ int main(int argc, char** argv) {
                         d->estoque -= quantidade;
 
                         long posicao = ftell(discos) - tamanhoRegistroDisco();
+                        printf("POSICAOOOO: %ld\n", posicao);
                         fseek(discos, posicao, SEEK_SET);
                         
                         salvaDisco(d, discos);
@@ -290,6 +292,17 @@ int main(int argc, char** argv) {
                 printf("\n Intercalacao Otima.\n");
                 numeroParticaoIntercalado = intercalaParticoes(numeroParticao);
                 unirParticoesOrdenadas(numeroParticaoIntercalado);
+                break;
+
+            case 20:
+                printf("\n TABELA HASH.\n");
+                inicalizaHash(13);
+                insereHash(10,funcionarios);
+                imprimeTabelaHash(13);
+                buscaHash(3,10,funcionarios);
+                printf("\nPAssou direto\n");
+
+                
                 break;
 
             default:
