@@ -5,12 +5,14 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct {
+typedef struct  {
     int id;             
     char nome[50];     
     char cpf[15];       
-    struct Funcionario *prox; // Ponteiro para o próximo Funcionário
+    long proximo; // Ponteiro para o próximo Funcionário
 } Funcionario;
+
+
 
 // Cria funcionario.
 Funcionario *criaFuncionario(int id, const char *nome, const char *cpf);

@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     FILE *funcionarios;
     FILE *discos;
     int quantidadeDeRegistros = 10;
-    int quantidadeTrocas = 3;
+    int quantidadeTrocas = 0;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
         printf("Erro ao abrir arquivo de discos\n");
         exit(1);
     }
-
+    // FILE *tabela = fopen("tabelaHash.dat", "r+b");
     Disco *d;
     Cliente *c;
     Funcionario *f;
@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
     int id_cadastro;
     int numeroParticao;
     int numeroParticaoIntercalado;
+     int qtdHash = 10;
 
     do { 
         printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<%s", verde, resetar);
@@ -295,13 +296,15 @@ int main(int argc, char** argv) {
                 break;
 
             case 20:
+               
                 printf("\n TABELA HASH.\n");
-                inicalizaHash(13);
-                insereHash(10,funcionarios);
-                imprimeTabelaHash(13);
-                buscaHash(3,10,funcionarios);
+                inicalizaHash(qtdHash);
+                insereHash(qtdHash,funcionarios);
+                imprimeTabelaHash(qtdHash);
+                buscaHash(1,qtdHash,funcionarios);
                 printf("\nPAssou direto\n");
-
+                imprimirBaseFuncionario(funcionarios);
+                imprimeTabelaHash(qtdHash);
                 
                 break;
 
