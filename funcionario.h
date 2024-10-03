@@ -69,7 +69,7 @@ void insereHash(int m, FILE *arq);
 
 void imprimeTabelaHash(int m) ;
 
-
+void salvaFuncionarioNaPosicao(FILE *arq, Funcionario *f, long posicao);
 
 
 #endif

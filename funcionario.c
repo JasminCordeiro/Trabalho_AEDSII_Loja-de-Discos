@@ -495,6 +495,31 @@ Funcionario *leFuncionarioNaPosicao(FILE *arq, long posicao) {
 }
 
 
+void salvaFuncionarioNaPosicao(FILE *arq, Funcionario *f, long posicao) {
+    // Verificar se o arquivo e o funcionário são válidos
+    if (arq == NULL || f == NULL) {
+        printf("Erro: Arquivo ou funcionário inválido.\n");
+        return;
+    }
+
+    // Move o cursor para a posição especificada
+    fseek(arq, posicao, SEEK_SET);
+
+    // Gravar os dados do funcionário no arquivo
+    fwrite(&f->id, sizeof(int), 1, arq);
+    fwrite(f->nome, sizeof(char), sizeof(f->nome), arq);
+    fwrite(f->cpf, sizeof(char), sizeof(f->cpf), arq);
+    fwrite(&f->proximo, sizeof(long), 1, arq);
+
+    // Forçar a gravação no arquivo
+    fflush(arq);
+
+    printf("Funcionário atualizado com sucesso na posição %ld.\n", posicao);
+}
+
+
+
+
 int hash(int id, int tam) {
     
     // return id;
@@ -558,8 +583,7 @@ Funcionario* buscaHash(int id, int tam, FILE *arqFunc) {
         imprimeFuncionario(f);
 
         aux = f->proximo;
-        printf("valor de aux no busca: %lf" ,aux);
-         exit(1); 
+        printf("valor de aux no busca: %ld" ,aux);
 
     if(aux == -1 ) {
         return f;
@@ -637,7 +661,8 @@ void insereHash(int m, FILE *arq) {
               if(fBusca->id != codigoFuncionario) {
             // Inserir na lista encadeada se já existir um funcionário com ID diferente
             aux = fBusca->proximo;
-            printf("valor de aux  :%lf\n\n", aux);
+            printf("valor de aux  :%ld\n\n", aux);
+
 
             while (aux != -1) {
                 funcAux = leFuncionarioNaPosicao(arq, aux);
@@ -648,7 +673,9 @@ void insereHash(int m, FILE *arq) {
             // Inserir no final da lista
             if (aux == -1) {
                 fBusca->proximo = posicaoFuncionarioArq;
-                printf("Inserido na lista encadeada na posicao: %ld\n", posicaoFuncionarioArq);
+                salvaFuncionarioNaPosicao(arq,fBusca,posicaoFuncionarioArq);
+                printf("Inserido na lista encadeada na posicao: %ld\n", fBusca->proximo);
+               
             }
         }}
 
