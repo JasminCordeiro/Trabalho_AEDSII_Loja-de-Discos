@@ -5,14 +5,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef struct  {
+typedef struct {
     int id;             
     char nome[50];     
     char cpf[15];       
-    long proximo; // Ponteiro para o próximo Funcionário
 } Funcionario;
-
-
 
 // Cria funcionario.
 Funcionario *criaFuncionario(int id, const char *nome, const char *cpf);
@@ -56,20 +53,4 @@ int selecaoPorSubstituicao(FILE * arq, int m);
 int intercalaParticoes(int qtdParticoes);
 
 void unirParticoesOrdenadas(int numParticoes);
-
-Funcionario *leFuncionarioNaPosicao(FILE *arq, long posicao);
-
-int hash(int id, int tam);
-
-void inicalizaHash(int m);
-
-Funcionario *buscaHash(int id,int tam, FILE *arqFunc);
-
-void insereHash(int m, FILE *arq);
-
-void imprimeTabelaHash(int m) ;
-
-void salvaFuncionarioNaPosicao(FILE *arq, Funcionario *f, long posicao);
-
-
 #endif

@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     FILE *clientes;
     FILE *funcionarios;
     FILE *discos;
-    int quantidadeDeRegistros = 10;
-    int quantidadeTrocas = 0;
+    int quantidadeDeRegistros = 1000;
+    int quantidadeTrocas = 250;
     
     int opcao;
     if ((compras = fopen("compras.dat", "w+b")) == NULL) {
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
         printf("Erro ao abrir arquivo de discos\n");
         exit(1);
     }
-    // FILE *tabela = fopen("tabelaHash.dat", "r+b");
+
     Disco *d;
     Cliente *c;
     Funcionario *f;
@@ -43,7 +43,6 @@ int main(int argc, char** argv) {
     int id_cadastro;
     int numeroParticao;
     int numeroParticaoIntercalado;
-     int qtdHash = 10;
 
     do { 
         printf("\n\n%s>>>>>>>>>>>>>>>>>>>>>>> LOJA DE DISCOS <<<<<<<<<<<<<<<<<<<%s", verde, resetar);
@@ -146,7 +145,6 @@ int main(int argc, char** argv) {
                 printf("\nCriando base de funcionario desordenada...\n");
                 criarBaseDesordenadaFuncionario(funcionarios, quantidadeDeRegistros, quantidadeTrocas);
                 imprimirBaseFuncionario(funcionarios);
-                printf("Teste quantidae de registro: %d", qtdRegistrosFuncionario(funcionarios));
                 break;
 
             case 8:
@@ -250,7 +248,6 @@ int main(int argc, char** argv) {
                         d->estoque -= quantidade;
 
                         long posicao = ftell(discos) - tamanhoRegistroDisco();
-                        printf("POSICAOOOO: %ld\n", posicao);
                         fseek(discos, posicao, SEEK_SET);
                         
                         salvaDisco(d, discos);
@@ -293,19 +290,6 @@ int main(int argc, char** argv) {
                 printf("\n Intercalacao Otima.\n");
                 numeroParticaoIntercalado = intercalaParticoes(numeroParticao);
                 unirParticoesOrdenadas(numeroParticaoIntercalado);
-                break;
-
-            case 20:
-               
-                printf("\n TABELA HASH.\n");
-                inicalizaHash(qtdHash);
-                insereHash(qtdHash,funcionarios);
-                imprimeTabelaHash(qtdHash);
-                buscaHash(1,qtdHash,funcionarios);
-                printf("\nPAssou direto\n");
-                imprimirBaseFuncionario(funcionarios);
-                imprimeTabelaHash(qtdHash);
-                
                 break;
 
             default:
