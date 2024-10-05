@@ -73,6 +73,11 @@ int main(int argc, char** argv) {
         printf("\n15. Cadastrar Compra");
         printf("\n16. Buscar Compras");
         printf("\n17. Gerar Relatorio de Compras");
+        printf("\n18. Selecao com Substituicao");
+        printf("\n19. Intercalacao Otima");
+        printf("\n20. Tabela Hash.");
+
+
 
         printf("\n\n0. Sair");        
         printf("\nEscolha uma opcao: ");

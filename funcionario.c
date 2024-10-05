@@ -342,7 +342,7 @@ int intercalaParticoes(int qtdParticoes) {
         sprintf(nomeArqParticao, "particoes/part%d.dat", i);
         particoes[i] = fopen(nomeArqParticao, "rb");
         if (particoes[i] == NULL) {
-            printf("Erro ao abrir o arquivo da partição %d\n", i);
+            printf("Erro ao abrir o arquivo da partiçao %d\n", i);
             exit(EXIT_FAILURE);
         }
         copiaFuncionarios[i] = leFuncionario(particoes[i]);  // Lê o primeiro funcionário de cada partição
@@ -415,7 +415,7 @@ void unirParticoesOrdenadas(int numParticoes) {
         sprintf(nomeArqParticao, "intercalacaoPart/partIntercalada%d.dat", i + 1);  // Ajuste: começa em 1 para nome do arquivo
         particoes[i] = fopen(nomeArqParticao, "rb");
         if (particoes[i] == NULL) {
-            printf("Erro ao abrir o arquivo da partição %s\n", nomeArqParticao);
+            printf("Erro ao abrir o arquivo da particao %s\n", nomeArqParticao);
             exit(1);
         }
 
@@ -514,7 +514,7 @@ void salvaFuncionarioNaPosicao(FILE *arq, Funcionario *f, long posicao) {
     // Forçar a gravação no arquivo
     fflush(arq);
 
-    printf("Funcionário atualizado com sucesso na posição %ld.\n", posicao);
+    printf("Funcionario atualizado com sucesso na posicao %ld.\n", posicao);
 }
 
 
@@ -556,7 +556,6 @@ Funcionario* buscaHash(int id, int tam, FILE *arqFunc) {
 
     // Calcular a posição inicial na tabela hash
     posicaoHash = hash(id, tam);
-    printf("Posição hash: %ld \n\n", posicaoHash);
 
     // Mover para a posição calculada e ler a posição do funcionário no arquivo
     fseek(tabelaHash, posicaoHash * sizeof(long), SEEK_SET);
@@ -581,9 +580,7 @@ Funcionario* buscaHash(int id, int tam, FILE *arqFunc) {
 
      if (f != NULL && f->id != id) {
         imprimeFuncionario(f);
-
         aux = f->proximo;
-        printf("valor de aux no busca: %ld" ,aux);
 
     if(aux == -1 ) {
         return f;
@@ -596,12 +593,12 @@ Funcionario* buscaHash(int id, int tam, FILE *arqFunc) {
     while (aux != -1) {  // Iterar até encontrar o ID desejado ou fim da lista
         funcAux = leFuncionarioNaPosicao(arqFunc, aux);
         if (funcAux == NULL) {
-            printf("Erro ao ler funcionario na posição %ld. Encerrando busca.\n", aux);
+            printf("Erro ao ler funcionario na posicao %ld. Encerrando busca.\n", aux);
             fclose(tabelaHash);
             return NULL;
         }
 
-        printf("Verificando funcionário na posição: %ld\n", aux);
+        printf("Verificando funcionário na posicao: %ld\n", aux);
         imprimeFuncionario(funcAux);
 
         if (funcAux->id == id) {  // Encontrou o funcionário com o ID desejado
@@ -656,13 +653,14 @@ void insereHash(int m, FILE *arq) {
             fflush(tabela);  // Forçar a gravação no arquivo
             printf("Gravado na posicao %d com sucesso.\n\n", posicaoHash);
         }else {
-    printf("codigo do funcionario :%d \n\n", codigoFuncionario);
-    printf("codigo encontrado  :%d \n\n", fBusca->id);
+            printf("Funcionario com ID %d ja existe na tabela.\n", codigoFuncionario);
+            printf("Inserindo na lista encadeada...\n");
+
+         
 
     if (fBusca->id != codigoFuncionario) {
         // Inserir na lista encadeada se já existir um funcionário com ID diferente
         aux = fBusca->proximo;
-        printf("valor de aux :%ld\n\n", aux);
 
         if (aux == -1) {
             // Caso o próximo seja -1, significa que é o final da lista
@@ -675,7 +673,7 @@ void insereHash(int m, FILE *arq) {
                 funcAux = leFuncionarioNaPosicao(arq, aux);
                 
                 if (funcAux == NULL) {
-                    printf("Erro ao ler o funcionário na posição %ld. Encerrando busca.\n", aux);
+                    printf("Erro ao ler o funcionário na posicao %ld. Encerrando busca.\n", aux);
                     break;
                 }
 
@@ -728,7 +726,7 @@ void excluiHash(int id, int tam, FILE *arqFunc ) {
     fread(&posicaoFuncionarioArq, sizeof(long), 1, tabelaHash);
 
     if (posicaoFuncionarioArq == -1) {
-        printf("Funcionario com ID %d não encontrado na tabela.\n", id);
+        printf("Funcionario com ID %d nao encontrado na tabela.\n", id);
         fclose(tabelaHash);
         return;
     }
@@ -743,12 +741,12 @@ void excluiHash(int id, int tam, FILE *arqFunc ) {
             long valorVazio = -1;
             fseek(tabelaHash, posicaoHash * sizeof(long), SEEK_SET);
             fwrite(&valorVazio, sizeof(long), 1, tabelaHash);
-            printf("Funcionario com ID %d removido da posição inicial.\n", id);
+            printf("Funcionario com ID %d removido da posicao inicial.\n", id);
         } else {
             // Atualizar a posição inicial para o próximo funcionário na lista
             fseek(tabelaHash, posicaoHash * sizeof(long), SEEK_SET);
             fwrite(&f->proximo, sizeof(long), 1, tabelaHash);
-            printf("Funcionario com ID %d removido. Novo inicio é ID %ld.\n", id, f->proximo);
+            printf("Funcionario com ID %d removido. Novo inicio e ID %ld.\n", id, f->proximo);
         }
     }
     else {
@@ -761,7 +759,7 @@ void excluiHash(int id, int tam, FILE *arqFunc ) {
         }
 
         if (f == NULL) {
-            printf("Funcionario com ID %d não encontrado na lista encadeada.\n", id);
+            printf("Funcionario com ID %d nao encontrado na lista encadeada.\n", id);
             fclose(tabelaHash);
             return;
         }
@@ -789,7 +787,7 @@ void excluiHash(int id, int tam, FILE *arqFunc ) {
     long posicao;
     int valor;
     
-    printf("Conteúdo da tabela Hash:\n");
+    printf("Conteudo da tabela Hash:\n");
     for (int i = 0; i < m; i++) {
         // Mover o ponteiro do arquivo para a posição correspondente
         fseek(tabela, i * sizeof(long), SEEK_SET);
