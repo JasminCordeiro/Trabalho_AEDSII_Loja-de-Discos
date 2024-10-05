@@ -14,7 +14,6 @@ Funcionario *criaFuncionario(int id, const char *nome, const char *cpf) {
     func->id = id;
     strncpy(func->nome, nome, sizeof(func->nome) - 1);
     strncpy(func->cpf, cpf, sizeof(func->cpf) - 1);
-    func->proximo = -1; // Inicializa o próximo como -1, indicando "NULL" (não aponta para ninguém)
     return func;
 }
 
@@ -23,13 +22,10 @@ void salvaFuncionario(Funcionario *func, FILE *arq) {
     fwrite(&func->id, sizeof(int), 1, arq);
     fwrite(func->nome, sizeof(char), sizeof(func->nome), arq);
     fwrite(func->cpf, sizeof(char), sizeof(func->cpf), arq);
-    
-    // Salva o campo proximo como long
-    long proxId = func->proximo; 
-    fwrite(&proxId, sizeof(long), 1, arq); // Salva a posição do próximo funcionário
 }
 
-
+// Lê um funcionário do arquivo na posição atual do cursor
+// Retorna um ponteiro para funcionário lido do arquivo
 Funcionario *leFuncionario(FILE *in) {
     Funcionario *func = (Funcionario *) malloc(sizeof(Funcionario));
     if (0 >= fread(&func->id, sizeof(int), 1, in)) {
@@ -38,30 +34,25 @@ Funcionario *leFuncionario(FILE *in) {
     }
     fread(func->nome, sizeof(char), sizeof(func->nome), in);
     fread(func->cpf, sizeof(char), sizeof(func->cpf), in);
-    fread(&func->proximo, sizeof(long), 1, in);
-
     return func;
 }
 
-
-// Imprime informações do funcionário
+// Imprime funcionario
 void imprimeFuncionario(Funcionario *func) {
     printf("**********************************************\n");
     printf("Funcionario de ID: %d\n", func->id);
     printf("Nome: %s\n", func->nome);
     printf("CPF: %s\n", func->cpf);
-    // Imprime o valor do ponteiro prox
-    printf("Endereco do proximo funcionario: %ld\n", func->proximo);
     printf("**********************************************\n");
 }
 
 // Retorna tamanho do funcionario em bytes
 int tamanhoRegistroFuncionario() {
-    return sizeof(int)                 // id
-           + sizeof(char) * 50         // nome
-           + sizeof(char) * 15         // cpf
-           + sizeof(long);             // proximo
+    return sizeof(int)  // id
+           + sizeof(char) * 50 // nome
+           + sizeof(char) * 15; // cpf
 }
+
 
 // Retorna a quantidade de registros no arquivo
 int qtdRegistrosFuncionario(FILE *arq) {
@@ -328,6 +319,7 @@ int selecaoPorSubstituicao(FILE *arq, int m) {
      return numeroParticao;
 }
 
+
 int intercalaParticoes(int qtdParticoes) { 
     int contaPartIntercalado = 0;
     int grupoSize = 4;  // Definindo o tamanho do grupo de 4 partições // Testar com mais tamanhos
@@ -471,248 +463,12 @@ void unirParticoesOrdenadas(int numParticoes) {
     fclose(saidaFinalOrdenada);
 }
 
-// Função para ler um funcionário a partir de uma posição específica no arquivo
-Funcionario *leFuncionarioNaPosicao(FILE *arq, long posicao) {
-    Funcionario *f = (Funcionario *) malloc(sizeof(Funcionario));
-    if (f == NULL) {
-        return NULL; // Verifica se a alocação foi bem-sucedida
-    }
-
-    // Move o cursor para a posição especificada
-    fseek(arq, posicao, SEEK_SET);
-
-    // Lê os dados do funcionário
-    if (fread(&f->id, sizeof(int), 1, arq) < 1) {
-        free(f);
-        return NULL; // Se não puder ler o ID, libera e retorna NULL
-    }
     
-    fread(f->nome, sizeof(char), sizeof(f->nome), arq); // Lê o nome
-    fread(f->cpf, sizeof(char), sizeof(f->cpf), arq);   // Lê o CPF
-    fread(&f->proximo, sizeof(long), 1, arq);
-
-    return f;
-}
-
-
-void salvaFuncionarioNaPosicao(FILE *arq, Funcionario *f, long posicao) {
-    // Verificar se o arquivo e o funcionário são válidos
-    if (arq == NULL || f == NULL) {
-        printf("Erro: Arquivo ou funcionário inválido.\n");
-        return;
-    }
-
-    // Move o cursor para a posição especificada
-    fseek(arq, posicao, SEEK_SET);
-
-    // Gravar os dados do funcionário no arquivo
-    fwrite(&f->id, sizeof(int), 1, arq);
-    fwrite(f->nome, sizeof(char), sizeof(f->nome), arq);
-    fwrite(f->cpf, sizeof(char), sizeof(f->cpf), arq);
-    fwrite(&f->proximo, sizeof(long), 1, arq);
-
-    // Forçar a gravação no arquivo
-    fflush(arq);
-
-    printf("Funcionário atualizado com sucesso na posição %ld.\n", posicao);
-}
 
 
 
 
-int hash(int id, int tam) {
-    
-    // return id;
-     return tam % id;
-}
-
-void inicalizaHash(int m) {
-     FILE *tabela = fopen("tabelaHash.dat", "w+b");
-    if (tabela == NULL) {
-        printf("Erro ao criar o arquivo de saída final ordenada.\n");
-        exit(1);
-    }
-
-    long valorInicial = -1;
-    for (int i = 0; i < m; i++) {
-        fseek(tabela, i * sizeof(long), SEEK_SET);
-        fwrite(&valorInicial, sizeof(long), 1, tabela);
-    }
-     fclose(tabela);
-}
-// Função para buscar um funcionário na tabela hash e no arquivo
-Funcionario* buscaHash(int id, int tam, FILE *arqFunc) {
-    FILE *tabelaHash = fopen("tabelaHash.dat", "r+b");
-    if (tabelaHash == NULL) {
-        printf("Erro ao abrir os arquivos.\n");
-        return NULL;
-    }
-
-    long posicaoFuncionarioArq;
-    long posicaoHash;
-    Funcionario *f = NULL;
-    Funcionario *funcAux = NULL;
-    long aux;
-
-    // Calcular a posição inicial na tabela hash
-    posicaoHash = hash(id, tam);
-    printf("Posição hash: %ld \n\n", posicaoHash);
-
-    // Mover para a posição calculada e ler a posição do funcionário no arquivo
-    fseek(tabelaHash, posicaoHash * sizeof(long), SEEK_SET);
-    fread(&posicaoFuncionarioArq, sizeof(long), 1, tabelaHash);
-
-    if (posicaoFuncionarioArq == -1) {  // Se não existir um funcionário na posição
-        printf("funcionario com ID %d não encontrado na tabela hash.\n", id);
-        fclose(tabelaHash);
-        return NULL;
-    }
-
-    printf("posicao inicial no arquivo: %ld\n", posicaoFuncionarioArq);
-
-    // Ler o funcionário na posição especificada
-    f = leFuncionarioNaPosicao(arqFunc, posicaoFuncionarioArq);
-    if (f != NULL && f->id == id) {
-        printf("funcionario encontrado na posicao inicial:\n\n");
-        imprimeFuncionario(f);
-        fclose(tabelaHash);
-        return f;
-    }
-
-     if (f != NULL && f->id != id) {
-        imprimeFuncionario(f);
-
-        aux = f->proximo;
-        printf("valor de aux no busca: %ld" ,aux);
-
-    if(aux == -1 ) {
-        return f;
-    }
-
-    // Se o ID não bater, continuar a busca nos próximos elementos
-    
-    // free(f);  // Liberar a memória alocada para o funcionário inicial
-
-    while (aux != -1) {  // Iterar até encontrar o ID desejado ou fim da lista
-        funcAux = leFuncionarioNaPosicao(arqFunc, aux);
-        if (funcAux == NULL) {
-            printf("Erro ao ler funcionario na posição %ld. Encerrando busca.\n", aux);
-            fclose(tabelaHash);
-            return NULL;
-        }
-
-        printf("Verificando funcionário na posição: %ld\n", aux);
-        imprimeFuncionario(funcAux);
-
-        if (funcAux->id == id) {  // Encontrou o funcionário com o ID desejado
-            printf("funcionario com ID %d encontrado!\n", id);
-            fclose(tabelaHash);
-            return funcAux;
-        }
-
-        // Atualiza `aux` para a posição do próximo funcionário na lista encadeada
-        aux = funcAux->proximo;
-        free(funcAux);  // Liberar a memória alocada para `funcAux`
-    }
-    return  f;
-     }
-
-    // Se não encontrar o funcionário
-    printf("funcionario com ID %d não encontrado na lista.\n", id);
-    fclose(tabelaHash);
-    return NULL;
-}
-
-void insereHash(int m, FILE *arq) {
-    Funcionario *f = NULL;
-    Funcionario *fBusca = NULL;
-    Funcionario *funcAux = NULL;
-    long posicaoFuncionarioArq;
-    int posicaoHash;
-    long aux;
-
-    FILE *tabela = fopen("tabelaHash.dat", "r+b");
-    if (tabela == NULL) {
-        printf("Erro ao abrir o arquivo tabelaHash.dat.\n");
-        exit(1);
-    }
-
-    rewind(arq);  // Voltar para o início do arquivo de funcionários
-
-    while ((f = leFuncionario(arq)) != NULL) {
-        posicaoFuncionarioArq = ftell(arq) - tamanhoRegistroFuncionario();
-        int codigoFuncionario = f->id;
-        printf("ID do funcionario: %d, posicao no arquivo: %ld\n", codigoFuncionario, posicaoFuncionarioArq);
-
-        // Calcular a posição no hash
-        posicaoHash = hash(codigoFuncionario, m);
-        printf("posicao hash para ID %d: %d\n", codigoFuncionario, posicaoHash);
-
-        // Busca na tabela hash se o ID já está presente
-        fBusca = buscaHash(codigoFuncionario, m, arq);
-        if (fBusca == NULL) {  // Caso não exista, gravar na tabela
-            fseek(tabela, posicaoHash * sizeof(long), SEEK_SET);
-            fwrite(&posicaoFuncionarioArq, sizeof(long), 1, tabela);
-            fflush(tabela);  // Forçar a gravação no arquivo
-            printf("Gravado na posicao %d com sucesso.\n\n", posicaoHash);
-        } else {
-            printf("codigo do funcionario :%d \n\n", codigoFuncionario);
-            printf("codigo encontradp  :%d \n\n", fBusca->id);
-              if(fBusca->id != codigoFuncionario) {
-            // Inserir na lista encadeada se já existir um funcionário com ID diferente
-            aux = fBusca->proximo;
-            printf("valor de aux  :%ld\n\n", aux);
 
 
-            while (aux != -1) {
-                funcAux = leFuncionarioNaPosicao(arq, aux);
-                aux = funcAux->proximo;
-                free(funcAux);
-            }
-
-            // Inserir no final da lista
-            if (aux == -1) {
-                fBusca->proximo = posicaoFuncionarioArq;
-                salvaFuncionarioNaPosicao(arq,fBusca,posicaoFuncionarioArq);
-                printf("Inserido na lista encadeada na posicao: %ld\n", fBusca->proximo);
-               
-            }
-        }}
-
-        free(f);
-        free(fBusca);
-    }
-
-    fclose(tabela);
-}
 
 
-    void imprimeTabelaHash(int m) {
-    FILE *tabela = fopen("tabelaHash.dat", "rb");
-    if (tabela == NULL) {
-        printf("Erro ao abrir o arquivo tabelaHash.dat para leitura.\n");
-        exit(1);
-    }
-
-    long posicao;
-    int valor;
-    
-    printf("Conteúdo da tabela Hash:\n");
-    for (int i = 0; i < m; i++) {
-        // Mover o ponteiro do arquivo para a posição correspondente
-        fseek(tabela, i * sizeof(long), SEEK_SET);
-        
-        // Ler o valor da posição
-        fread(&valor, sizeof(long), 1, tabela);
-        
-        // Exibir a posição e o valor
-        printf("indice %d: ", i + 1);
-        if (valor == -1) {
-            printf("Vazio\n");
-        } else {
-            printf("posicao do Funcionario: %ld\n", valor);
-        }
-    }
-
-    fclose(tabela);
-}
